@@ -778,6 +778,231 @@
             ctx.restore();
         }
 
+        // Админские скины (промокод админ4444)
+        function drawPavel(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            // Голова с капюшоном
+            ctx.fillStyle = '#3d5c3d';
+            ctx.beginPath();
+            ctx.arc(20*s, 8*s, 9*s, 0, Math.PI * 2);
+            ctx.fill();
+            // Лицо
+            ctx.fillStyle = '#e8d4b8';
+            ctx.beginPath();
+            ctx.arc(20*s, 10*s, 6*s, 0, Math.PI * 2);
+            ctx.fill();
+            // Глаза и рот
+            ctx.fillStyle = '#333';
+            ctx.fillRect(17*s, 8*s, 2*s, 2*s);
+            ctx.fillRect(22*s, 8*s, 2*s, 2*s);
+            ctx.beginPath();
+            ctx.arc(20*s, 13*s, 2*s, 0, Math.PI);
+            ctx.stroke();
+            // Антенна на капюшоне
+            ctx.fillStyle = '#8fbc8f';
+            ctx.fillRect(19*s, 0, 2*s, 5*s);
+            // Тело черное
+            ctx.fillStyle = '#2a2a2a';
+            ctx.fillRect(12*s, 17*s, 16*s, 12*s);
+            // Красный узор на груди
+            ctx.fillStyle = '#c41e3a';
+            ctx.beginPath();
+            ctx.moveTo(20*s, 19*s);
+            ctx.lineTo(26*s, 25*s);
+            ctx.lineTo(20*s, 28*s);
+            ctx.lineTo(14*s, 25*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            ctx.arc(20*s, 24*s, 2*s, 0, Math.PI * 2);
+            ctx.fill();
+            // Ноги серые
+            ctx.fillStyle = '#666';
+            ctx.fillRect(14*s, 29*s, 5*s, 11*s);
+            ctx.fillRect(21*s, 29*s, 5*s, 11*s);
+            ctx.restore();
+        }
+
+        function drawDaniel(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            // Кепка
+            ctx.fillStyle = '#5c3317';
+            ctx.fillRect(14*s, 2*s, 12*s, 4*s);
+            ctx.fillRect(12*s, 5*s, 16*s, 2*s);
+            // Желтая голова смайлик
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(14*s, 6*s, 12*s, 10*s);
+            // Глаза смайлика
+            ctx.fillStyle = '#000';
+            ctx.fillRect(16*s, 9*s, 2*s, 3*s);
+            ctx.fillRect(22*s, 9*s, 2*s, 3*s);
+            // Улыбка
+            ctx.beginPath();
+            ctx.arc(20*s, 13*s, 3*s, 0.1, Math.PI - 0.1);
+            ctx.stroke();
+            // Кролик на плече
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(30*s, 8*s, 4*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(28*s, 2*s, 2*s, 5*s);
+            ctx.fillRect(31*s, 2*s, 2*s, 5*s);
+            // Тело черное с маршмеллоу
+            ctx.fillStyle = '#111';
+            ctx.fillRect(12*s, 16*s, 16*s, 12*s);
+            // Радужная маска маршмеллоу
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(20*s, 22*s, 5*s, 0, Math.PI * 2);
+            ctx.fill();
+            // X глаза маршмеллоу
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 1.5*s;
+            ctx.beginPath();
+            ctx.moveTo(17*s, 20*s); ctx.lineTo(19*s, 22*s);
+            ctx.moveTo(19*s, 20*s); ctx.lineTo(17*s, 22*s);
+            ctx.moveTo(21*s, 20*s); ctx.lineTo(23*s, 22*s);
+            ctx.moveTo(23*s, 20*s); ctx.lineTo(21*s, 22*s);
+            ctx.stroke();
+            // Улыбка радужная
+            ctx.strokeStyle = '#ff00ff';
+            ctx.beginPath();
+            ctx.arc(20*s, 24*s, 2*s, 0, Math.PI);
+            ctx.stroke();
+            // Рукава тигровые
+            ctx.fillStyle = '#ff8c00';
+            ctx.fillRect(6*s, 17*s, 6*s, 8*s);
+            ctx.fillRect(28*s, 17*s, 6*s, 8*s);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(7*s, 18*s, 2*s, 2*s);
+            ctx.fillRect(10*s, 21*s, 2*s, 2*s);
+            ctx.fillRect(29*s, 19*s, 2*s, 2*s);
+            ctx.fillRect(32*s, 22*s, 2*s, 2*s);
+            // Ноги
+            ctx.fillStyle = '#111';
+            ctx.fillRect(14*s, 28*s, 5*s, 12*s);
+            ctx.fillRect(21*s, 28*s, 5*s, 12*s);
+            ctx.restore();
+        }
+
+        function drawTeo(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            // Кепка
+            ctx.fillStyle = '#8b0000';
+            ctx.fillRect(14*s, 2*s, 12*s, 4*s);
+            ctx.fillRect(12*s, 5*s, 16*s, 2*s);
+            // Белая голова
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(14*s, 6*s, 12*s, 10*s);
+            // Лицо meme
+            ctx.fillStyle = '#000';
+            ctx.fillRect(15*s, 9*s, 3*s, 2*s);
+            ctx.fillRect(22*s, 9*s, 3*s, 2*s);
+            ctx.beginPath();
+            ctx.moveTo(16*s, 13*s);
+            ctx.lineTo(20*s, 15*s);
+            ctx.lineTo(24*s, 13*s);
+            ctx.stroke();
+            // Nyan cat радуга
+            const rainbow = ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#8b00ff'];
+            for (let i = 0; i < 6; i++) {
+                ctx.fillStyle = rainbow[i];
+                ctx.fillRect(0, (16 + i*3)*s, 40*s, 3*s);
+            }
+            // Nyan cat тело
+            ctx.fillStyle = '#ffb6c1';
+            ctx.fillRect(28*s, 18*s, 10*s, 8*s);
+            ctx.fillStyle = '#ff69b4';
+            for (let i = 0; i < 3; i++) {
+                ctx.fillRect((30 + i*2)*s, 20*s, 1.5*s, 1.5*s);
+            }
+            // Тело черное
+            ctx.fillStyle = '#111';
+            ctx.fillRect(12*s, 16*s, 16*s, 12*s);
+            // Радужные полосы
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(10*s, 18*s, 2*s, 8*s);
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(28*s, 18*s, 2*s, 8*s);
+            // Ноги
+            ctx.fillStyle = '#222';
+            ctx.fillRect(14*s, 28*s, 5*s, 12*s);
+            ctx.fillRect(21*s, 28*s, 5*s, 12*s);
+            // Радужные полосы на ногах
+            ctx.fillStyle = '#ff00ff';
+            ctx.fillRect(12*s, 30*s, 2*s, 8*s);
+            ctx.fillRect(26*s, 30*s, 2*s, 8*s);
+            ctx.restore();
+        }
+
+        function drawPapa(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            // Кепка ROBLOX
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(13*s, 1*s, 14*s, 5*s);
+            ctx.fillRect(11*s, 5*s, 18*s, 2*s);
+            ctx.fillStyle = '#fff';
+            ctx.font = `${4*s}px Arial`;
+            ctx.fillText('R', 18*s, 5*s);
+            // Желтая голова
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(14*s, 6*s, 12*s, 10*s);
+            // Смайлик
+            ctx.fillStyle = '#000';
+            ctx.fillRect(16*s, 9*s, 2*s, 3*s);
+            ctx.fillRect(22*s, 9*s, 2*s, 3*s);
+            ctx.beginPath();
+            ctx.arc(20*s, 13*s, 3*s, 0.1, Math.PI - 0.1);
+            ctx.stroke();
+            // Тело черное с неоновыми амонгусами
+            ctx.fillStyle = '#111';
+            ctx.fillRect(10*s, 16*s, 20*s, 14*s);
+            // Неоновые амонгусы
+            ctx.strokeStyle = '#00ffff';
+            ctx.lineWidth = 1*s;
+            // Амонгус 1
+            ctx.beginPath();
+            ctx.arc(16*s, 22*s, 3*s, 0, Math.PI * 2);
+            ctx.moveTo(14*s, 25*s); ctx.lineTo(14*s, 28*s);
+            ctx.moveTo(18*s, 25*s); ctx.lineTo(18*s, 28*s);
+            ctx.stroke();
+            // Амонгус 2
+            ctx.strokeStyle = '#ff00ff';
+            ctx.beginPath();
+            ctx.arc(24*s, 22*s, 3*s, 0, Math.PI * 2);
+            ctx.stroke();
+            // SuS текст
+            ctx.fillStyle = '#00ff00';
+            ctx.font = `bold ${5*s}px Arial`;
+            ctx.fillText('SuS', 15*s, 28*s);
+            // Радужные края
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(8*s, 17*s, 2*s, 12*s);
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(30*s, 17*s, 2*s, 12*s);
+            ctx.fillStyle = '#0000ff';
+            ctx.fillRect(8*s, 29*s, 24*s, 2*s);
+            // Ноги
+            ctx.fillStyle = '#222';
+            ctx.fillRect(14*s, 30*s, 5*s, 10*s);
+            ctx.fillRect(21*s, 30*s, 5*s, 10*s);
+            // Радужные полосы
+            ctx.fillStyle = '#ff00ff';
+            ctx.fillRect(12*s, 32*s, 2*s, 6*s);
+            ctx.fillStyle = '#00ffff';
+            ctx.fillRect(26*s, 32*s, 2*s, 6*s);
+            ctx.restore();
+        }
+
         // Скины
         const SKINS = [
             { id: 'mannequin', name: 'Манекен', draw: drawMannequin, price: 0, owned: true },
@@ -787,7 +1012,11 @@
             { id: 'skin67', name: 'Скин 67', draw: draw67, price: -1, owned: false, promo: true },
             { id: 'blackstick1', name: 'Black Stick', draw: drawBlackStick1, price: -1, owned: false, cheat: true },
             { id: 'blackstick2', name: 'Black Stick II', draw: drawBlackStick2, price: -1, owned: false, cheat: true },
-            { id: 'blackstick3', name: 'Black Stick III', draw: drawBlackStick3, price: -1, owned: false, cheat: true }
+            { id: 'blackstick3', name: 'Black Stick III', draw: drawBlackStick3, price: -1, owned: false, cheat: true },
+            { id: 'pavel', name: 'Павел', draw: drawPavel, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
+            { id: 'daniel', name: 'Даниэль', draw: drawDaniel, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
+            { id: 'teo', name: 'Тео', draw: drawTeo, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
+            { id: 'papa', name: 'Папа', draw: drawPapa, price: -1, owned: false, promo: true, promoCode: 'админ4444' }
         ];
 
         const DIFFICULTIES = {
@@ -1049,7 +1278,7 @@
                     priceText = skin.price === 0 ? 'Бесплатно' : `${skin.price} очков`;
                 } else if (skin.promo) {
                     btnHtml = '<button class="skin-btn locked">Промокод</button>';
-                    priceText = 'Промокод';
+                    priceText = skin.promoCode ? 'Админ' : 'Промокод';
                 } else if (canBuy) {
                     btnHtml = `<button class="skin-btn buy" onclick="buySkin('${skin.id}')">Купить</button>`;
                     priceText = `${skin.price} очков`;
@@ -1117,6 +1346,24 @@
                     gameState.currentSkin = 'skin67';
                     saveState();
                     message.textContent = 'Скин 67 получен!';
+                    message.className = 'promo-message success';
+                }
+            } else if (code === 'админ4444') {
+                if (gameState.usedPromoCodes.includes('админ4444')) {
+                    message.textContent = 'Уже использован!';
+                    message.className = 'promo-message error';
+                } else {
+                    // Разблокируем все 4 админских скина
+                    const adminSkins = ['pavel', 'daniel', 'teo', 'papa'];
+                    adminSkins.forEach(skinId => {
+                        if (!gameState.ownedSkins.includes(skinId)) {
+                            gameState.ownedSkins.push(skinId);
+                        }
+                    });
+                    gameState.usedPromoCodes.push('админ4444');
+                    gameState.currentSkin = 'pavel';
+                    saveState();
+                    message.textContent = 'Разблокированы: Павел, Даниэль, Тео, Папа!';
                     message.className = 'promo-message success';
                 }
             } else {

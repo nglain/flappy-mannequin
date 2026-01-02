@@ -93,6 +93,8 @@
         .menu-btn.skins { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
         .menu-btn.promo { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
         .menu-btn.difficulty { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
+        .menu-btn.cheats { background: linear-gradient(135deg, #ff0000, #8b0000); color: white; text-shadow: 0 0 10px #fff; }
+        .menu-btn.pass { background: linear-gradient(135deg, #00d4ff, #7b2ff7); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .menu-btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         .menu-btn:active { transform: scale(0.98); }
 
@@ -288,6 +290,228 @@
         .promo-message.success { color: #2ecc71; }
         .promo-message.error { color: #ffcccc; }
 
+        /* Читы */
+        .cheats-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #1a1a1a 0%, #8b0000 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+            z-index: 15;
+            overflow-y: auto;
+        }
+
+        .cheats-menu.hidden { display: none; }
+        .cheats-menu h2 {
+            color: #ff0000;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff0000;
+            font-size: clamp(20px, 6vw, 28px);
+        }
+
+        .cheat-item {
+            width: 90%;
+            max-width: 280px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,0,0,0.2);
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+
+        .cheat-item span { color: white; font-size: 14px; }
+
+        .cheat-toggle {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .cheat-toggle.off { background: #555; color: #aaa; }
+        .cheat-toggle.on { background: #00ff00; color: #000; box-shadow: 0 0 10px #00ff00; }
+
+        .cheat-action {
+            width: 90%;
+            max-width: 280px;
+            padding: 12px;
+            margin: 5px 0;
+            background: linear-gradient(135deg, #ff6600, #ff0000);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .cheat-action:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(255,0,0,0.5); }
+
+        .cheats-warning {
+            color: #ffcc00;
+            font-size: 11px;
+            text-align: center;
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        /* Battle Pass */
+        .pass-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #0a0a2e 0%, #1a0a3e 50%, #2a1a4e 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            z-index: 15;
+            overflow-y: auto;
+        }
+
+        .pass-menu.hidden { display: none; }
+        .pass-menu h2 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: clamp(20px, 6vw, 28px);
+            text-shadow: 0 0 20px #00d4ff;
+        }
+
+        .pass-level-display {
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7);
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .pass-level-display .level {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .pass-level-display .label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .pass-progress {
+            width: 90%;
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
+
+        .pass-progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .pass-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7, #ff00ff);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .pass-progress-text {
+            color: rgba(255,255,255,0.7);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .pass-rewards {
+            width: 95%;
+            max-width: 320px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .pass-reward-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            border-left: 3px solid #444;
+        }
+
+        .pass-reward-item.unlocked {
+            border-left-color: #00ff00;
+            background: rgba(0,255,0,0.1);
+        }
+
+        .pass-reward-item.current {
+            border-left-color: #00d4ff;
+            background: rgba(0,212,255,0.2);
+            box-shadow: 0 0 10px rgba(0,212,255,0.3);
+        }
+
+        .pass-reward-item.exclusive {
+            border-left-color: #ff00ff;
+            background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(123,47,247,0.2));
+        }
+
+        .pass-reward-level {
+            width: 35px;
+            height: 35px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .pass-reward-item.unlocked .pass-reward-level {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .pass-reward-info {
+            flex: 1;
+            color: white;
+        }
+
+        .pass-reward-info h4 {
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .pass-reward-info p {
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .pass-reward-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* Online Parkour */
         .online-menu {
             position: absolute;
@@ -453,7 +677,7 @@
 
         @media (max-width: 450px) {
             #gameContainer { max-height: 100vh; border-radius: 0; }
-            canvas, .menu, .skins-menu, .promo-menu, .game-over, .difficulty-menu, .online-menu { border-radius: 0; }
+            canvas, .menu, .skins-menu, .promo-menu, .game-over, .difficulty-menu, .online-menu, .cheats-menu { border-radius: 0; }
         }
     </style>
 </head>
@@ -474,6 +698,8 @@
             <button class="menu-btn skins" onclick="openSkins()">Скины</button>
             <button class="menu-btn difficulty" onclick="openDifficulty()">Сложность</button>
             <button class="menu-btn promo" onclick="openPromo()">Промокод</button>
+            <button class="menu-btn pass" onclick="openPass()">Пасс</button>
+            <button class="menu-btn cheats" onclick="openCheats()">Читы</button>
         </div>
 
         <!-- Онлайн Паркур -->
@@ -527,6 +753,65 @@
             <button class="promo-submit" onclick="submitPromo()">Активировать</button>
             <button class="back-btn" onclick="closePromo()">Назад</button>
             <p id="promoMessage" class="promo-message"></p>
+        </div>
+
+        <!-- Читы -->
+        <div id="cheatsMenu" class="cheats-menu hidden">
+            <h2>ЧИТЫ</h2>
+
+            <div class="cheat-item">
+                <span>Бессмертие</span>
+                <button id="godModeBtn" class="cheat-toggle off" onclick="toggleCheat('godMode')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Авто-прыжок</span>
+                <button id="autoJumpBtn" class="cheat-toggle off" onclick="toggleCheat('autoJump')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Замедление</span>
+                <button id="slowMoBtn" class="cheat-toggle off" onclick="toggleCheat('slowMo')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Мега-прыжок</span>
+                <button id="megaJumpBtn" class="cheat-toggle off" onclick="toggleCheat('megaJump')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Широкий проход</span>
+                <button id="wideGapBtn" class="cheat-toggle off" onclick="toggleCheat('wideGap')">OFF</button>
+            </div>
+
+            <button class="cheat-action" onclick="cheatAddCoins()">+1000 очков</button>
+            <button class="cheat-action" onclick="cheatUnlockAll()">Разблокировать ВСЕ скины</button>
+            <button class="cheat-action" onclick="cheatResetProgress()">Сбросить прогресс</button>
+
+            <p class="cheats-warning">Читы работают только в одиночной игре</p>
+
+            <button class="back-btn" onclick="closeCheats()">Назад</button>
+        </div>
+
+        <!-- Battle Pass -->
+        <div id="passMenu" class="pass-menu hidden">
+            <h2>BATTLE PASS</h2>
+
+            <div class="pass-level-display">
+                <div class="level" id="passLevel">1</div>
+                <div class="label">УРОВЕНЬ</div>
+            </div>
+
+            <div class="pass-progress">
+                <div class="pass-progress-bar">
+                    <div class="pass-progress-fill" id="passProgressFill" style="width: 0%"></div>
+                </div>
+                <div class="pass-progress-text" id="passProgressText">0 / 10 очков до след. уровня</div>
+            </div>
+
+            <div class="pass-rewards" id="passRewards"></div>
+
+            <button class="back-btn" onclick="closePass()">Назад</button>
         </div>
 
         <!-- Game Over -->
@@ -1003,6 +1288,81 @@
             ctx.restore();
         }
 
+        // Скин "Билет" (Battle Pass Level 45)
+        function drawTicket(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Основа билета (голубой)
+            ctx.fillStyle = '#00d4ff';
+            ctx.beginPath();
+            ctx.roundRect(2*s, 8*s, 36*s, 24*s, 4*s);
+            ctx.fill();
+
+            // Тень внутри
+            ctx.fillStyle = '#00a8cc';
+            ctx.fillRect(4*s, 10*s, 32*s, 20*s);
+
+            // Череп/лицо (черное)
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(18*s, 20*s, 10*s, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Глаза черепа (красные злые)
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.arc(14*s, 18*s, 3*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(22*s, 18*s, 3*s, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Злые брови
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineWidth = 2*s;
+            ctx.beginPath();
+            ctx.moveTo(11*s, 14*s);
+            ctx.lineTo(16*s, 16*s);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(25*s, 14*s);
+            ctx.lineTo(20*s, 16*s);
+            ctx.stroke();
+
+            // Рот (зубы)
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(13*s, 24*s, 10*s, 4*s);
+            ctx.fillStyle = '#000';
+            for(let i = 0; i < 4; i++) {
+                ctx.fillRect((14 + i*2.5)*s, 24*s, 1*s, 4*s);
+            }
+
+            // Круги справа (как на настоящем билете)
+            ctx.fillStyle = '#00a8cc';
+            ctx.beginPath();
+            ctx.arc(35*s, 14*s, 2*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(35*s, 20*s, 2*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(35*s, 26*s, 2*s, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Свечение
+            ctx.shadowColor = '#00d4ff';
+            ctx.shadowBlur = 10*s;
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1*s;
+            ctx.beginPath();
+            ctx.roundRect(2*s, 8*s, 36*s, 24*s, 4*s);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
         // Скины
         const SKINS = [
             { id: 'mannequin', name: 'Манекен', draw: drawMannequin, price: 0, owned: true },
@@ -1016,7 +1376,8 @@
             { id: 'pavel', name: 'Павел', draw: drawPavel, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
             { id: 'daniel', name: 'Даниэль', draw: drawDaniel, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
             { id: 'teo', name: 'Тео', draw: drawTeo, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
-            { id: 'papa', name: 'Папа', draw: drawPapa, price: -1, owned: false, promo: true, promoCode: 'админ4444' }
+            { id: 'papa', name: 'Папа', draw: drawPapa, price: -1, owned: false, promo: true, promoCode: 'админ4444' },
+            { id: 'ticket', name: 'Билет', draw: drawTicket, price: -1, owned: false, passLevel: 45 }
         ];
 
         const DIFFICULTIES = {
@@ -1041,6 +1402,161 @@
         let animationId = null;
         let frameCount = 0;
         let currentDiff = DIFFICULTIES[gameState.difficulty];
+
+        // Читы
+        let cheats = {
+            godMode: false,
+            autoJump: false,
+            slowMo: false,
+            megaJump: false,
+            wideGap: false
+        };
+
+        function openCheats() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('cheatsMenu').classList.remove('hidden');
+            updateCheatButtons();
+        }
+
+        function closeCheats() {
+            document.getElementById('cheatsMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+        }
+
+        function toggleCheat(cheatName) {
+            cheats[cheatName] = !cheats[cheatName];
+            updateCheatButtons();
+        }
+
+        function updateCheatButtons() {
+            const buttons = {
+                godMode: 'godModeBtn',
+                autoJump: 'autoJumpBtn',
+                slowMo: 'slowMoBtn',
+                megaJump: 'megaJumpBtn',
+                wideGap: 'wideGapBtn'
+            };
+            for (const [cheat, btnId] of Object.entries(buttons)) {
+                const btn = document.getElementById(btnId);
+                if (cheats[cheat]) {
+                    btn.textContent = 'ON';
+                    btn.className = 'cheat-toggle on';
+                } else {
+                    btn.textContent = 'OFF';
+                    btn.className = 'cheat-toggle off';
+                }
+            }
+        }
+
+        function cheatAddCoins() {
+            gameState.totalScore += 1000;
+            saveState();
+            updateUI();
+            alert('Добавлено 1000 очков!');
+        }
+
+        function cheatUnlockAll() {
+            SKINS.forEach(skin => {
+                if (!gameState.ownedSkins.includes(skin.id)) {
+                    gameState.ownedSkins.push(skin.id);
+                }
+            });
+            saveState();
+            alert('Все скины разблокированы!');
+        }
+
+        function cheatResetProgress() {
+            if (confirm('Сбросить ВСЕ прогресс? Это удалит очки, скины и достижения!')) {
+                localStorage.removeItem('flappyTotalScore');
+                localStorage.removeItem('flappyBestScore');
+                localStorage.removeItem('flappyCurrentSkin');
+                localStorage.removeItem('flappyOwnedSkins');
+                localStorage.removeItem('flappyUsedPromos');
+                localStorage.removeItem('flappyDifficulty');
+                location.reload();
+            }
+        }
+
+        // Battle Pass функции
+        function getPassLevel() {
+            return Math.floor(gameState.totalScore / 10);
+        }
+
+        function getPassProgress() {
+            return gameState.totalScore % 10;
+        }
+
+        function openPass() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('passMenu').classList.remove('hidden');
+            renderPassUI();
+        }
+
+        function closePass() {
+            document.getElementById('passMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+        }
+
+        function renderPassUI() {
+            const level = getPassLevel();
+            const progress = getPassProgress();
+
+            document.getElementById('passLevel').textContent = level;
+            document.getElementById('passProgressFill').style.width = (progress * 10) + '%';
+            document.getElementById('passProgressText').textContent = `${progress} / 10 очков до след. уровня`;
+
+            renderPassRewards(level);
+        }
+
+        function renderPassRewards(currentLevel) {
+            const container = document.getElementById('passRewards');
+            const rewards = [
+                { level: 5, name: '+50 очков', type: 'coins', amount: 50 },
+                { level: 10, name: '+100 очков', type: 'coins', amount: 100 },
+                { level: 15, name: '+150 очков', type: 'coins', amount: 150 },
+                { level: 20, name: '+200 очков', type: 'coins', amount: 200 },
+                { level: 25, name: '+300 очков', type: 'coins', amount: 300 },
+                { level: 30, name: '+400 очков', type: 'coins', amount: 400 },
+                { level: 35, name: '+500 очков', type: 'coins', amount: 500 },
+                { level: 40, name: '+750 очков', type: 'coins', amount: 750 },
+                { level: 45, name: 'Скин "Билет"', type: 'skin', skinId: 'ticket' }
+            ];
+
+            container.innerHTML = rewards.map(reward => {
+                const unlocked = currentLevel >= reward.level;
+                const isCurrent = currentLevel === reward.level - 1 ||
+                                  (currentLevel >= reward.level && !rewards.find(r => r.level > reward.level && currentLevel < r.level));
+                const isExclusive = reward.type === 'skin';
+
+                let statusClass = '';
+                if (unlocked) statusClass = 'unlocked';
+                else if (isCurrent) statusClass = 'current';
+                if (isExclusive) statusClass += ' exclusive';
+
+                let icon = '🎁';
+                if (reward.type === 'coins') icon = '💰';
+                if (reward.type === 'skin') icon = '⭐';
+
+                // Автоматически выдаем награду
+                if (unlocked && reward.type === 'skin') {
+                    if (!gameState.ownedSkins.includes(reward.skinId)) {
+                        gameState.ownedSkins.push(reward.skinId);
+                        saveState();
+                    }
+                }
+
+                return `
+                    <div class="pass-reward-item ${statusClass}">
+                        <div class="pass-reward-level">${reward.level}</div>
+                        <div class="pass-reward-info">
+                            <h4>${reward.name}</h4>
+                            <p>${unlocked ? '✓ Получено' : isExclusive ? 'Эксклюзивный скин!' : 'Награда за уровень'}</p>
+                        </div>
+                        <div class="pass-reward-icon">${icon}</div>
+                    </div>
+                `;
+            }).join('');
+        }
 
         // Online функции
         function updateOnlinePresence() {
@@ -1200,6 +1716,8 @@
             document.getElementById('promoMenu').classList.add('hidden');
             document.getElementById('difficultyMenu').classList.add('hidden');
             document.getElementById('onlineMenu').classList.add('hidden');
+            document.getElementById('cheatsMenu').classList.add('hidden');
+            document.getElementById('passMenu').classList.add('hidden');
             document.getElementById('jumpZone').style.display = 'none';
             isOnlineMode = false;
             updateUI();
@@ -1270,6 +1788,23 @@
                 if (skin.cheat) {
                     btnHtml = '<button class="skin-btn cheat-locked">ЧИТ</button>';
                     priceText = '<span class="skin-price cheat">Недоступен</span>';
+                } else if (skin.passLevel) {
+                    const currentLevel = getPassLevel();
+                    if (owned || currentLevel >= skin.passLevel) {
+                        if (!gameState.ownedSkins.includes(skin.id)) {
+                            gameState.ownedSkins.push(skin.id);
+                            saveState();
+                        }
+                        if (selected) {
+                            btnHtml = '<button class="skin-btn selected">Выбран</button>';
+                        } else {
+                            btnHtml = `<button class="skin-btn select" onclick="selectSkin('${skin.id}')">Выбрать</button>`;
+                        }
+                        priceText = 'Battle Pass Lv.' + skin.passLevel;
+                    } else {
+                        btnHtml = '<button class="skin-btn locked">Пасс</button>';
+                        priceText = 'Battle Pass Lv.' + skin.passLevel;
+                    }
                 } else if (selected) {
                     btnHtml = '<button class="skin-btn selected">Выбран</button>';
                     priceText = skin.price === 0 ? 'Бесплатно' : `${skin.price} очков`;
@@ -1398,36 +1933,68 @@
         }
 
         function update() {
-            player.velocity += currentDiff.gravity;
+            // Применяем читы slowMo
+            const gravityMod = cheats.slowMo ? 0.5 : 1;
+            const speedMod = cheats.slowMo ? 0.5 : 1;
+
+            player.velocity += currentDiff.gravity * gravityMod;
             player.y += player.velocity;
 
             if (player.y < 0) { player.y = 0; player.velocity = 0; }
-            if (player.y + player.height > canvas.height) { gameOver(); return; }
+            // godMode: не умираем от пола
+            if (player.y + player.height > canvas.height) {
+                if (cheats.godMode) {
+                    player.y = canvas.height - player.height;
+                    player.velocity = 0;
+                } else {
+                    gameOver();
+                    return;
+                }
+            }
 
             frameCount++;
             if (frameCount % currentDiff.spawn === 0) {
-                const gapY = Math.random() * (canvas.height - currentDiff.gap - 150) + 75;
+                // wideGap: увеличенный проход
+                const gapSize = cheats.wideGap ? currentDiff.gap + 100 : currentDiff.gap;
+                const gapY = Math.random() * (canvas.height - gapSize - 150) + 75;
                 pipes.push({ x: canvas.width, gapY: gapY, passed: false });
             }
 
             const PIPE_WIDTH = 60;
             for (let i = pipes.length - 1; i >= 0; i--) {
-                pipes[i].x -= currentDiff.pipeSpeed;
+                pipes[i].x -= currentDiff.pipeSpeed * speedMod;
                 if (pipes[i].x + PIPE_WIDTH < 0) { pipes.splice(i, 1); continue; }
                 if (!pipes[i].passed && pipes[i].x + PIPE_WIDTH < player.x) {
                     pipes[i].passed = true;
                     score++;
                 }
-                if (checkCollision(pipes[i])) { gameOver(); return; }
+
+                // autoJump: автоматический прыжок когда приближаемся к трубе
+                if (cheats.autoJump && !isOnlineMode) {
+                    const gapSize = cheats.wideGap ? currentDiff.gap + 100 : currentDiff.gap;
+                    const pipeCenter = pipes[i].gapY + gapSize / 2;
+                    if (pipes[i].x > player.x && pipes[i].x < player.x + 150) {
+                        if (player.y > pipeCenter) {
+                            jump();
+                        }
+                    }
+                }
+
+                // godMode: пропускаем столкновение
+                if (!cheats.godMode && checkCollision(pipes[i])) {
+                    gameOver();
+                    return;
+                }
             }
         }
 
         function checkCollision(pipe) {
             const PIPE_WIDTH = 60;
+            const gapSize = cheats.wideGap ? currentDiff.gap + 100 : currentDiff.gap;
             const pL = player.x + 5, pR = player.x + player.width - 5;
             const pT = player.y + 5, pB = player.y + player.height - 5;
             if (pR > pipe.x && pL < pipe.x + PIPE_WIDTH) {
-                if (pT < pipe.gapY || pB > pipe.gapY + currentDiff.gap) return true;
+                if (pT < pipe.gapY || pB > pipe.gapY + gapSize) return true;
             }
             return false;
         }
@@ -1446,15 +2013,16 @@
             ctx.arc(130 - (frameCount * 0.5) % 550, 70, 25, 0, Math.PI * 2);
             ctx.fill();
 
+            const gapSize = cheats.wideGap ? currentDiff.gap + 100 : currentDiff.gap;
             pipes.forEach(pipe => {
                 ctx.fillStyle = '#2ecc71';
                 ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
                 ctx.fillStyle = '#27ae60';
                 ctx.fillRect(pipe.x - 5, pipe.gapY - 25, PIPE_WIDTH + 10, 25);
                 ctx.fillStyle = '#2ecc71';
-                ctx.fillRect(pipe.x, pipe.gapY + currentDiff.gap, PIPE_WIDTH, canvas.height - pipe.gapY - currentDiff.gap);
+                ctx.fillRect(pipe.x, pipe.gapY + gapSize, PIPE_WIDTH, canvas.height - pipe.gapY - gapSize);
                 ctx.fillStyle = '#27ae60';
-                ctx.fillRect(pipe.x - 5, pipe.gapY + currentDiff.gap, PIPE_WIDTH + 10, 25);
+                ctx.fillRect(pipe.x - 5, pipe.gapY + gapSize, PIPE_WIDTH + 10, 25);
             });
 
             const currentSkinData = SKINS.find(s => s.id === gameState.currentSkin);
@@ -1475,11 +2043,33 @@
                 ctx.font = 'bold 16px Arial';
                 ctx.fillText('ONLINE', canvas.width / 2, 100);
             }
+
+            // Индикатор читов
+            const activeCheats = Object.entries(cheats).filter(([k, v]) => v).map(([k]) => k);
+            if (activeCheats.length > 0 && !isOnlineMode) {
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText('CHEATS: ON', 10, 25);
+                ctx.font = '10px Arial';
+                const cheatLabels = {
+                    godMode: 'GOD',
+                    autoJump: 'AUTO',
+                    slowMo: 'SLOW',
+                    megaJump: 'MEGA',
+                    wideGap: 'WIDE'
+                };
+                const labels = activeCheats.map(c => cheatLabels[c] || c).join(' ');
+                ctx.fillText(labels, 10, 40);
+                ctx.textAlign = 'center';
+            }
         }
 
         function jump() {
             if (!gameRunning) return;
-            player.velocity = currentDiff.jump;
+            // megaJump: усиленный прыжок (x1.5)
+            const jumpPower = cheats.megaJump ? currentDiff.jump * 1.5 : currentDiff.jump;
+            player.velocity = jumpPower;
         }
 
         function gameOver() {

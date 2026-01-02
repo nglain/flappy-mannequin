@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flappy Mannequin Online</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 700px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .menu.hidden { display: none; }
+
+        .menu h1 {
+            font-size: clamp(24px, 8vw, 36px);
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .menu-subtitle {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: clamp(12px, 3vw, 14px);
+            text-align: center;
+        }
+
+        .menu-btn {
+            width: 80%;
+            max-width: 200px;
+            padding: clamp(10px, 2.5vw, 12px) 25px;
+            margin: 5px;
+            font-size: clamp(13px, 3.5vw, 16px);
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .menu-btn.play { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
+        .menu-btn.online { background: linear-gradient(135deg, #e91e63, #9c27b0); color: white; }
+        .menu-btn.skins { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+        .menu-btn.promo { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+        .menu-btn.difficulty { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
+        .menu-btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .menu-btn:active { transform: scale(0.98); }
+
+        .score-display {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.5);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: clamp(12px, 3vw, 14px);
+        }
+
+        .current-skin-preview {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .current-skin-preview canvas { border-radius: 0; box-shadow: none; }
+
+        .difficulty-badge {
+            background: rgba(0,0,0,0.3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        /* Скины */
+        .skins-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            z-index: 15;
+            overflow-y: auto;
+        }
+
+        .skins-menu.hidden { display: none; }
+        .skins-menu h2 { color: white; margin-bottom: 8px; font-size: clamp(18px, 5vw, 24px); }
+        .skins-balance { color: #ffd700; font-size: clamp(14px, 4vw, 18px); margin-bottom: 15px; }
+
+        .skins-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .skin-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .skin-item:hover { background: rgba(255,255,255,0.2); }
+        .skin-item.owned { border: 2px solid #27ae60; }
+        .skin-item.selected { border: 2px solid #ffd700; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .skin-item.locked-cheat { border: 2px solid #ff0000; opacity: 0.6; }
+
+        .skin-icon {
+            width: 45px; height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .skin-info { flex: 1; color: white; min-width: 0; }
+        .skin-info h3 { margin-bottom: 2px; font-size: clamp(13px, 3.5vw, 15px); }
+        .skin-price { color: #ffd700; font-size: clamp(10px, 2.5vw, 12px); }
+        .skin-price.cheat { color: #ff4444; }
+
+        .skin-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: clamp(10px, 2.5vw, 12px);
+            flex-shrink: 0;
+        }
+
+        .skin-btn.buy { background: #27ae60; color: white; }
+        .skin-btn.select { background: #3498db; color: white; }
+        .skin-btn.selected { background: #ffd700; color: #333; }
+        .skin-btn.locked { background: #7f8c8d; color: white; cursor: not-allowed; }
+        .skin-btn.cheat-locked { background: #ff0000; color: white; cursor: not-allowed; }
+        .skin-btn:hover:not(.locked):not(.cheat-locked) { transform: scale(1.05); }
+
+        .back-btn {
+            margin-top: 15px;
+            padding: 10px 35px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: clamp(14px, 4vw, 16px);
+            cursor: pointer;
+        }
+
+        /* Сложность */
+        .difficulty-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            padding: 20px;
+        }
+
+        .difficulty-menu.hidden { display: none; }
+        .difficulty-menu h2 { color: white; margin-bottom: 25px; font-size: clamp(20px, 6vw, 28px); }
+
+        .diff-btn {
+            width: 80%; max-width: 220px;
+            padding: 15px; margin: 8px;
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: bold;
+            border: none; border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .diff-btn.easy { background: #27ae60; color: white; }
+        .diff-btn.normal { background: #3498db; color: white; }
+        .diff-btn.hard { background: #e74c3c; color: white; }
+        .diff-btn.selected-diff { box-shadow: 0 0 0 4px white; transform: scale(1.05); }
+
+        /* Промокод */
+        .promo-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #8e44ad 0%, #9b59b6 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            padding: 20px;
+        }
+
+        .promo-menu.hidden { display: none; }
+        .promo-menu h2 { color: white; margin-bottom: 25px; }
+
+        .promo-input {
+            width: 80%; max-width: 250px;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            border: none; border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .promo-submit {
+            padding: 12px 35px;
+            background: #27ae60;
+            color: white;
+            border: none; border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .promo-message { color: white; margin-top: 15px; font-size: 14px; text-align: center; }
+        .promo-message.success { color: #2ecc71; }
+        .promo-message.error { color: #ffcccc; }
+
+        /* Online Parkour */
+        .online-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #e91e63 0%, #9c27b0 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            z-index: 15;
+        }
+
+        .online-menu.hidden { display: none; }
+        .online-menu h2 { color: white; margin-bottom: 10px; font-size: clamp(18px, 5vw, 24px); }
+
+        .online-stats {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .online-stats span { color: #ffd700; font-weight: bold; }
+
+        .leaderboard {
+            width: 100%;
+            max-width: 300px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .leaderboard h3 { color: #ffd700; font-size: 14px; margin-bottom: 8px; text-align: center; }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            margin-bottom: 4px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .leaderboard-item.me { background: rgba(255,215,0,0.3); }
+
+        /* Чат */
+        .chat-container {
+            width: 100%;
+            max-width: 300px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 180px;
+        }
+
+        .chat-msg {
+            margin-bottom: 6px;
+            padding: 5px 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .chat-msg .name { color: #ffd700; font-weight: bold; }
+        .chat-msg .text { color: white; }
+        .chat-msg.system { background: rgba(255,0,0,0.2); color: #ffaaaa; font-style: italic; }
+
+        .chat-input-row {
+            display: flex;
+            padding: 8px;
+            gap: 5px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .chat-send {
+            padding: 8px 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .name-input-row {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .name-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .name-btn {
+            padding: 10px 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Game Over */
+        .game-over {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            padding: 20px;
+        }
+
+        .game-over.hidden { display: none; }
+        .game-over h2 { color: #e74c3c; font-size: clamp(32px, 10vw, 48px); margin-bottom: 15px; }
+        .game-over .final-score { color: white; font-size: 20px; margin-bottom: 8px; }
+        .game-over .best-score { color: #ffd700; font-size: 16px; margin-bottom: 20px; }
+        .game-over .earned { color: #2ecc71; font-size: 14px; margin-bottom: 20px; }
+
+        .jump-zone {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        @media (max-width: 450px) {
+            #gameContainer { max-height: 100vh; border-radius: 0; }
+            canvas, .menu, .skins-menu, .promo-menu, .game-over, .difficulty-menu, .online-menu { border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="400" height="700"></canvas>
+        <div class="jump-zone" id="jumpZone"></div>
+
+        <!-- Главное меню -->
+        <div id="mainMenu" class="menu">
+            <canvas id="menuSkinPreview" width="50" height="50" class="current-skin-preview"></canvas>
+            <h1>Flappy Mannequin</h1>
+            <div class="difficulty-badge" id="currentDiffBadge">Нормально</div>
+            <p class="menu-subtitle">Тапни или ПРОБЕЛ</p>
+            <div class="score-display">Очки: <span id="totalScore">0</span></div>
+            <button class="menu-btn play" onclick="startGame()">Играть</button>
+            <button class="menu-btn online" onclick="openOnline()">Онлайн Паркур</button>
+            <button class="menu-btn skins" onclick="openSkins()">Скины</button>
+            <button class="menu-btn difficulty" onclick="openDifficulty()">Сложность</button>
+            <button class="menu-btn promo" onclick="openPromo()">Промокод</button>
+        </div>
+
+        <!-- Онлайн Паркур -->
+        <div id="onlineMenu" class="online-menu hidden">
+            <h2>Онлайн Паркур</h2>
+            <div class="online-stats">Игроков онлайн: <span id="onlineCount">0</span></div>
+
+            <div class="name-input-row" id="nameInputRow">
+                <input type="text" id="playerNameInput" class="name-input" placeholder="Твой ник..." maxlength="15">
+                <button class="name-btn" onclick="setPlayerName()">OK</button>
+            </div>
+
+            <div class="leaderboard">
+                <h3>Таблица лидеров</h3>
+                <div id="leaderboardList"></div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Сообщение..." maxlength="100">
+                    <button class="chat-send" onclick="sendChatMessage()">Отпр</button>
+                </div>
+            </div>
+
+            <button class="menu-btn play" onclick="startOnlineGame()">Играть онлайн</button>
+            <button class="back-btn" onclick="closeOnline()">Назад</button>
+        </div>
+
+        <!-- Сложность -->
+        <div id="difficultyMenu" class="difficulty-menu hidden">
+            <h2>Сложность</h2>
+            <button class="diff-btn easy" onclick="setDifficulty('easy')">Легко</button>
+            <button class="diff-btn normal" onclick="setDifficulty('normal')">Нормально</button>
+            <button class="diff-btn hard" onclick="setDifficulty('hard')">Сложно</button>
+            <button class="back-btn" onclick="closeDifficulty()">Назад</button>
+        </div>
+
+        <!-- Скины -->
+        <div id="skinsMenu" class="skins-menu hidden">
+            <h2>Магазин Скинов</h2>
+            <div class="skins-balance">Очки: <span id="skinsBalance">0</span></div>
+            <div class="skins-grid" id="skinsGrid"></div>
+            <button class="back-btn" onclick="closeSkins()">Назад</button>
+        </div>
+
+        <!-- Промокод -->
+        <div id="promoMenu" class="promo-menu hidden">
+            <h2>Промокод</h2>
+            <input type="text" id="promoInput" class="promo-input" placeholder="Код...">
+            <button class="promo-submit" onclick="submitPromo()">Активировать</button>
+            <button class="back-btn" onclick="closePromo()">Назад</button>
+            <p id="promoMessage" class="promo-message"></p>
+        </div>
+
+        <!-- Game Over -->
+        <div id="gameOver" class="game-over hidden">
+            <h2>GAME OVER</h2>
+            <p class="final-score">Счёт: <span id="finalScore">0</span></p>
+            <p class="best-score">Лучший: <span id="bestScore">0</span></p>
+            <p class="earned">+<span id="earnedPoints">0</span> очков!</p>
+            <button class="menu-btn play" onclick="startGame()">Ещё раз</button>
+            <button class="back-btn" onclick="showMainMenu()">В меню</button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase конфигурация
+        const firebaseConfig = {
+            apiKey: "AIzaSyDemo-FlappyMannequin",
+            authDomain: "flappy-mannequin.firebaseapp.com",
+            databaseURL: "https://flappy-mannequin-default-rtdb.firebaseio.com",
+            projectId: "flappy-mannequin",
+            storageBucket: "flappy-mannequin.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123"
+        };
+
+        // Инициализация Firebase
+        let db = null;
+        let playerId = 'player_' + Math.random().toString(36).substr(2, 9);
+        let playerName = localStorage.getItem('flappyPlayerName') || '';
+        let isOnlineMode = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+        } catch (e) {
+            console.log('Firebase offline mode');
+        }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Функции отрисовки скинов
+        function drawMannequin(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = '#DEB887';
+            ctx.beginPath();
+            ctx.arc(20*s, 8*s, 8*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(15*s, 16*s, 10*s, 14*s);
+            ctx.fillRect(8*s, 18*s, 7*s, 3*s);
+            ctx.fillRect(25*s, 18*s, 7*s, 3*s);
+            ctx.fillRect(15*s, 30*s, 4*s, 10*s);
+            ctx.fillRect(21*s, 30*s, 4*s, 10*s);
+            ctx.restore();
+        }
+
+        function drawKnife(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = '#C0C0C0';
+            ctx.beginPath();
+            ctx.moveTo(5*s, 20*s);
+            ctx.lineTo(30*s, 15*s);
+            ctx.lineTo(35*s, 20*s);
+            ctx.lineTo(30*s, 25*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#E8E8E8';
+            ctx.beginPath();
+            ctx.moveTo(10*s, 19*s);
+            ctx.lineTo(25*s, 16*s);
+            ctx.lineTo(25*s, 18*s);
+            ctx.lineTo(10*s, 21*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#4A3728';
+            ctx.fillRect(0*s, 17*s, 8*s, 6*s);
+            ctx.restore();
+        }
+
+        function drawSonic(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = '#1E90FF';
+            ctx.beginPath();
+            ctx.moveTo(25*s, 0*s); ctx.lineTo(35*s, 8*s); ctx.lineTo(22*s, 10*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(30*s, 5*s); ctx.lineTo(40*s, 10*s); ctx.lineTo(28*s, 14*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(18*s, 14*s, 12*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#FFDAB9';
+            ctx.beginPath();
+            ctx.arc(12*s, 16*s, 7*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.ellipse(10*s, 14*s, 3*s, 4*s, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(11*s, 14*s, 1.5*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(6*s, 17*s, 2*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#1E90FF';
+            ctx.beginPath();
+            ctx.ellipse(18*s, 30*s, 8*s, 7*s, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawAmongUs(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = '#C51111';
+            ctx.beginPath();
+            ctx.moveTo(8*s, 10*s);
+            ctx.quadraticCurveTo(8*s, 2*s, 20*s, 2*s);
+            ctx.quadraticCurveTo(32*s, 2*s, 32*s, 10*s);
+            ctx.lineTo(32*s, 28*s);
+            ctx.lineTo(26*s, 28*s); ctx.lineTo(26*s, 36*s);
+            ctx.lineTo(20*s, 36*s); ctx.lineTo(20*s, 28*s);
+            ctx.lineTo(14*s, 28*s); ctx.lineTo(14*s, 36*s);
+            ctx.lineTo(8*s, 36*s); ctx.lineTo(8*s, 10*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(32*s, 12*s);
+            ctx.quadraticCurveTo(40*s, 12*s, 40*s, 20*s);
+            ctx.quadraticCurveTo(40*s, 28*s, 32*s, 28*s);
+            ctx.lineTo(32*s, 12*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#89CFF0';
+            ctx.beginPath();
+            ctx.moveTo(6*s, 8*s);
+            ctx.quadraticCurveTo(6*s, 4*s, 14*s, 6*s);
+            ctx.lineTo(22*s, 10*s);
+            ctx.quadraticCurveTo(24*s, 18*s, 14*s, 20*s);
+            ctx.quadraticCurveTo(6*s, 18*s, 6*s, 8*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#1a1a1a';
+            ctx.lineWidth = 2*s;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function draw67(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.font = `bold ${28*s}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.strokeStyle = '#0a2351';
+            ctx.lineWidth = 3*s;
+            ctx.strokeText('67', 20*s, 22*s);
+            ctx.fillStyle = '#4682B4';
+            ctx.fillText('67', 20*s, 22*s);
+            ctx.restore();
+        }
+
+        // Чёрные стикмены (заблокированы)
+        function drawBlackStick1(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = '#111';
+            ctx.beginPath();
+            ctx.arc(20*s, 6*s, 6*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#111';
+            ctx.lineWidth = 3*s;
+            ctx.beginPath();
+            ctx.moveTo(20*s, 12*s); ctx.lineTo(20*s, 26*s);
+            ctx.moveTo(20*s, 16*s); ctx.lineTo(10*s, 22*s);
+            ctx.moveTo(20*s, 16*s); ctx.lineTo(30*s, 22*s);
+            ctx.moveTo(20*s, 26*s); ctx.lineTo(12*s, 38*s);
+            ctx.moveTo(20*s, 26*s); ctx.lineTo(28*s, 38*s);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawBlackStick2(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = '#222';
+            ctx.beginPath();
+            ctx.arc(20*s, 6*s, 6*s, 0, Math.PI * 2);
+            ctx.fill();
+            // Глаза красные
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.arc(17*s, 5*s, 1.5*s, 0, Math.PI * 2);
+            ctx.arc(23*s, 5*s, 1.5*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 3*s;
+            ctx.beginPath();
+            ctx.moveTo(20*s, 12*s); ctx.lineTo(20*s, 26*s);
+            ctx.moveTo(20*s, 16*s); ctx.lineTo(8*s, 20*s);
+            ctx.moveTo(20*s, 16*s); ctx.lineTo(32*s, 20*s);
+            ctx.moveTo(20*s, 26*s); ctx.lineTo(10*s, 38*s);
+            ctx.moveTo(20*s, 26*s); ctx.lineTo(30*s, 38*s);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawBlackStick3(ctx, x, y, size) {
+            const s = size / 40;
+            ctx.save();
+            ctx.translate(x, y);
+            // С огнём
+            ctx.fillStyle = '#ff4400';
+            ctx.beginPath();
+            ctx.moveTo(20*s, 0); ctx.lineTo(25*s, 8*s); ctx.lineTo(22*s, 5*s);
+            ctx.lineTo(28*s, 10*s); ctx.lineTo(20*s, 6*s);
+            ctx.lineTo(12*s, 10*s); ctx.lineTo(18*s, 5*s);
+            ctx.lineTo(15*s, 8*s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(20*s, 10*s, 6*s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 4*s;
+            ctx.beginPath();
+            ctx.moveTo(20*s, 16*s); ctx.lineTo(20*s, 28*s);
+            ctx.moveTo(20*s, 20*s); ctx.lineTo(8*s, 24*s);
+            ctx.moveTo(20*s, 20*s); ctx.lineTo(32*s, 24*s);
+            ctx.moveTo(20*s, 28*s); ctx.lineTo(10*s, 40*s);
+            ctx.moveTo(20*s, 28*s); ctx.lineTo(30*s, 40*s);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Скины
+        const SKINS = [
+            { id: 'mannequin', name: 'Манекен', draw: drawMannequin, price: 0, owned: true },
+            { id: 'knife', name: 'Нож', draw: drawKnife, price: 10, owned: false },
+            { id: 'amongus', name: 'Амонгус', draw: drawAmongUs, price: 20, owned: false },
+            { id: 'sonic', name: 'Соник', draw: drawSonic, price: 30, owned: false },
+            { id: 'skin67', name: 'Скин 67', draw: draw67, price: -1, owned: false, promo: true },
+            { id: 'blackstick1', name: 'Black Stick', draw: drawBlackStick1, price: -1, owned: false, cheat: true },
+            { id: 'blackstick2', name: 'Black Stick II', draw: drawBlackStick2, price: -1, owned: false, cheat: true },
+            { id: 'blackstick3', name: 'Black Stick III', draw: drawBlackStick3, price: -1, owned: false, cheat: true }
+        ];
+
+        const DIFFICULTIES = {
+            easy: { name: 'Легко', gravity: 0.35, jump: -8, pipeSpeed: 2.5, gap: 180, spawn: 120 },
+            normal: { name: 'Нормально', gravity: 0.5, jump: -9, pipeSpeed: 3, gap: 150, spawn: 100 },
+            hard: { name: 'Сложно', gravity: 0.6, jump: -10, pipeSpeed: 4, gap: 120, spawn: 80 }
+        };
+
+        let gameState = {
+            totalScore: parseInt(localStorage.getItem('flappyTotalScore')) || 0,
+            bestScore: parseInt(localStorage.getItem('flappyBestScore')) || 0,
+            currentSkin: localStorage.getItem('flappyCurrentSkin') || 'mannequin',
+            ownedSkins: JSON.parse(localStorage.getItem('flappyOwnedSkins')) || ['mannequin'],
+            usedPromoCodes: JSON.parse(localStorage.getItem('flappyUsedPromos')) || [],
+            difficulty: localStorage.getItem('flappyDifficulty') || 'normal'
+        };
+
+        let player = { x: 80, y: 300, velocity: 0, width: 40, height: 40 };
+        let pipes = [];
+        let score = 0;
+        let gameRunning = false;
+        let animationId = null;
+        let frameCount = 0;
+        let currentDiff = DIFFICULTIES[gameState.difficulty];
+
+        // Online функции
+        function updateOnlinePresence() {
+            if (!db || !playerName) return;
+            const playerRef = db.ref('players/' + playerId);
+            playerRef.set({
+                name: playerName,
+                score: gameState.bestScore,
+                skin: gameState.currentSkin,
+                lastSeen: Date.now()
+            });
+            playerRef.onDisconnect().remove();
+        }
+
+        function listenToOnlinePlayers() {
+            if (!db) return;
+            db.ref('players').on('value', (snapshot) => {
+                const players = snapshot.val() || {};
+                const count = Object.keys(players).length;
+                document.getElementById('onlineCount').textContent = count;
+
+                // Лидерборд
+                const list = document.getElementById('leaderboardList');
+                const sorted = Object.entries(players)
+                    .map(([id, data]) => ({ id, ...data }))
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, 10);
+
+                list.innerHTML = sorted.map((p, i) =>
+                    `<div class="leaderboard-item ${p.id === playerId ? 'me' : ''}">
+                        <span>${i + 1}. ${p.name}</span>
+                        <span>${p.score}</span>
+                    </div>`
+                ).join('');
+            });
+        }
+
+        function listenToChat() {
+            if (!db) return;
+            db.ref('chat').orderByChild('time').limitToLast(50).on('child_added', (snapshot) => {
+                const msg = snapshot.val();
+                const container = document.getElementById('chatMessages');
+                const div = document.createElement('div');
+                div.className = 'chat-msg' + (msg.system ? ' system' : '');
+                div.innerHTML = msg.system
+                    ? `<span class="text">${msg.text}</span>`
+                    : `<span class="name">${msg.name}:</span> <span class="text">${msg.text}</span>`;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        function sendChatMessage() {
+            if (!db || !playerName) return;
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            db.ref('chat').push({
+                name: playerName,
+                text: text,
+                time: Date.now()
+            });
+            input.value = '';
+        }
+
+        function setPlayerName() {
+            const input = document.getElementById('playerNameInput');
+            const name = input.value.trim();
+            if (!name) return;
+
+            playerName = name;
+            localStorage.setItem('flappyPlayerName', name);
+            document.getElementById('nameInputRow').style.display = 'none';
+
+            updateOnlinePresence();
+
+            if (db) {
+                db.ref('chat').push({
+                    system: true,
+                    text: `${name} присоединился!`,
+                    time: Date.now()
+                });
+            }
+        }
+
+        function openOnline() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('onlineMenu').classList.remove('hidden');
+
+            if (playerName) {
+                document.getElementById('playerNameInput').value = playerName;
+                document.getElementById('nameInputRow').style.display = 'none';
+                updateOnlinePresence();
+            } else {
+                document.getElementById('nameInputRow').style.display = 'flex';
+            }
+
+            listenToOnlinePlayers();
+            listenToChat();
+        }
+
+        function closeOnline() {
+            document.getElementById('onlineMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+            isOnlineMode = false;
+        }
+
+        function startOnlineGame() {
+            if (!playerName) {
+                alert('Введи ник!');
+                return;
+            }
+            isOnlineMode = true;
+            startGame();
+        }
+
+        // UI функции
+        function updateMenuPreview() {
+            const previewCanvas = document.getElementById('menuSkinPreview');
+            const previewCtx = previewCanvas.getContext('2d');
+            previewCtx.clearRect(0, 0, 50, 50);
+            const currentSkinData = SKINS.find(s => s.id === gameState.currentSkin);
+            if (currentSkinData && currentSkinData.draw) {
+                currentSkinData.draw(previewCtx, 5, 2, 40);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('totalScore').textContent = gameState.totalScore;
+            document.getElementById('skinsBalance').textContent = gameState.totalScore;
+            document.getElementById('bestScore').textContent = gameState.bestScore;
+            document.getElementById('currentDiffBadge').textContent = DIFFICULTIES[gameState.difficulty].name;
+            updateMenuPreview();
+            updateDifficultyButtons();
+        }
+
+        function updateDifficultyButtons() {
+            document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('selected-diff'));
+            const selectedBtn = document.querySelector(`.diff-btn.${gameState.difficulty}`);
+            if (selectedBtn) selectedBtn.classList.add('selected-diff');
+        }
+
+        function saveState() {
+            localStorage.setItem('flappyTotalScore', gameState.totalScore);
+            localStorage.setItem('flappyBestScore', gameState.bestScore);
+            localStorage.setItem('flappyCurrentSkin', gameState.currentSkin);
+            localStorage.setItem('flappyOwnedSkins', JSON.stringify(gameState.ownedSkins));
+            localStorage.setItem('flappyUsedPromos', JSON.stringify(gameState.usedPromoCodes));
+            localStorage.setItem('flappyDifficulty', gameState.difficulty);
+        }
+
+        function showMainMenu() {
+            document.getElementById('mainMenu').classList.remove('hidden');
+            document.getElementById('gameOver').classList.add('hidden');
+            document.getElementById('skinsMenu').classList.add('hidden');
+            document.getElementById('promoMenu').classList.add('hidden');
+            document.getElementById('difficultyMenu').classList.add('hidden');
+            document.getElementById('onlineMenu').classList.add('hidden');
+            document.getElementById('jumpZone').style.display = 'none';
+            isOnlineMode = false;
+            updateUI();
+        }
+
+        function openSkins() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('skinsMenu').classList.remove('hidden');
+            renderSkins();
+        }
+
+        function closeSkins() {
+            document.getElementById('skinsMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+            updateUI();
+        }
+
+        function openDifficulty() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('difficultyMenu').classList.remove('hidden');
+            updateDifficultyButtons();
+        }
+
+        function closeDifficulty() {
+            document.getElementById('difficultyMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+        }
+
+        function setDifficulty(diff) {
+            gameState.difficulty = diff;
+            currentDiff = DIFFICULTIES[diff];
+            saveState();
+            updateDifficultyButtons();
+            updateUI();
+        }
+
+        function openPromo() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('promoMenu').classList.remove('hidden');
+            document.getElementById('promoMessage').textContent = '';
+            document.getElementById('promoInput').value = '';
+        }
+
+        function closePromo() {
+            document.getElementById('promoMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+        }
+
+        function renderSkins() {
+            const grid = document.getElementById('skinsGrid');
+            grid.innerHTML = '';
+
+            SKINS.forEach(skin => {
+                const owned = gameState.ownedSkins.includes(skin.id);
+                const selected = gameState.currentSkin === skin.id;
+                const canBuy = !skin.promo && !skin.cheat && gameState.totalScore >= skin.price;
+
+                const item = document.createElement('div');
+                let itemClass = 'skin-item';
+                if (selected) itemClass += ' selected';
+                else if (owned) itemClass += ' owned';
+                else if (skin.cheat) itemClass += ' locked-cheat';
+                item.className = itemClass;
+
+                let btnHtml = '';
+                let priceText = '';
+
+                if (skin.cheat) {
+                    btnHtml = '<button class="skin-btn cheat-locked">ЧИТ</button>';
+                    priceText = '<span class="skin-price cheat">Недоступен</span>';
+                } else if (selected) {
+                    btnHtml = '<button class="skin-btn selected">Выбран</button>';
+                    priceText = skin.price === 0 ? 'Бесплатно' : `${skin.price} очков`;
+                } else if (owned) {
+                    btnHtml = `<button class="skin-btn select" onclick="selectSkin('${skin.id}')">Выбрать</button>`;
+                    priceText = skin.price === 0 ? 'Бесплатно' : `${skin.price} очков`;
+                } else if (skin.promo) {
+                    btnHtml = '<button class="skin-btn locked">Промокод</button>';
+                    priceText = 'Промокод';
+                } else if (canBuy) {
+                    btnHtml = `<button class="skin-btn buy" onclick="buySkin('${skin.id}')">Купить</button>`;
+                    priceText = `${skin.price} очков`;
+                } else {
+                    btnHtml = '<button class="skin-btn locked">Мало</button>';
+                    priceText = `${skin.price} очков`;
+                }
+
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'skin-icon';
+                const miniCanvas = document.createElement('canvas');
+                miniCanvas.width = 40;
+                miniCanvas.height = 40;
+                const miniCtx = miniCanvas.getContext('2d');
+                skin.draw(miniCtx, 0, 0, 40);
+                iconDiv.appendChild(miniCanvas);
+
+                item.innerHTML = `
+                    <div class="skin-info">
+                        <h3>${skin.name}</h3>
+                        <p class="skin-price ${skin.cheat ? 'cheat' : ''}">${priceText}</p>
+                    </div>
+                    ${btnHtml}
+                `;
+                item.insertBefore(iconDiv, item.firstChild);
+                grid.appendChild(item);
+            });
+        }
+
+        function buySkin(skinId) {
+            const skin = SKINS.find(s => s.id === skinId);
+            if (!skin || gameState.ownedSkins.includes(skinId)) return;
+            if (skin.cheat || skin.promo) return;
+            if (gameState.totalScore < skin.price) return;
+
+            gameState.totalScore -= skin.price;
+            gameState.ownedSkins.push(skinId);
+            gameState.currentSkin = skinId;
+            saveState();
+            renderSkins();
+            document.getElementById('skinsBalance').textContent = gameState.totalScore;
+        }
+
+        function selectSkin(skinId) {
+            const skin = SKINS.find(s => s.id === skinId);
+            if (!gameState.ownedSkins.includes(skinId)) return;
+            if (skin && skin.cheat) return;
+            gameState.currentSkin = skinId;
+            saveState();
+            renderSkins();
+        }
+
+        function submitPromo() {
+            const input = document.getElementById('promoInput');
+            const message = document.getElementById('promoMessage');
+            const code = input.value.trim();
+
+            if (code === '67') {
+                if (gameState.usedPromoCodes.includes('67')) {
+                    message.textContent = 'Уже использован!';
+                    message.className = 'promo-message error';
+                } else {
+                    gameState.ownedSkins.push('skin67');
+                    gameState.usedPromoCodes.push('67');
+                    gameState.currentSkin = 'skin67';
+                    saveState();
+                    message.textContent = 'Скин 67 получен!';
+                    message.className = 'promo-message success';
+                }
+            } else {
+                message.textContent = 'Неверный код!';
+                message.className = 'promo-message error';
+            }
+        }
+
+        // Игра
+        function startGame() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('onlineMenu').classList.add('hidden');
+            document.getElementById('gameOver').classList.add('hidden');
+            document.getElementById('jumpZone').style.display = 'block';
+
+            currentDiff = DIFFICULTIES[gameState.difficulty];
+            player = { x: 80, y: 300, velocity: 0, width: 40, height: 40 };
+            pipes = [];
+            score = 0;
+            frameCount = 0;
+            gameRunning = true;
+
+            if (animationId) cancelAnimationFrame(animationId);
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            update();
+            render();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            player.velocity += currentDiff.gravity;
+            player.y += player.velocity;
+
+            if (player.y < 0) { player.y = 0; player.velocity = 0; }
+            if (player.y + player.height > canvas.height) { gameOver(); return; }
+
+            frameCount++;
+            if (frameCount % currentDiff.spawn === 0) {
+                const gapY = Math.random() * (canvas.height - currentDiff.gap - 150) + 75;
+                pipes.push({ x: canvas.width, gapY: gapY, passed: false });
+            }
+
+            const PIPE_WIDTH = 60;
+            for (let i = pipes.length - 1; i >= 0; i--) {
+                pipes[i].x -= currentDiff.pipeSpeed;
+                if (pipes[i].x + PIPE_WIDTH < 0) { pipes.splice(i, 1); continue; }
+                if (!pipes[i].passed && pipes[i].x + PIPE_WIDTH < player.x) {
+                    pipes[i].passed = true;
+                    score++;
+                }
+                if (checkCollision(pipes[i])) { gameOver(); return; }
+            }
+        }
+
+        function checkCollision(pipe) {
+            const PIPE_WIDTH = 60;
+            const pL = player.x + 5, pR = player.x + player.width - 5;
+            const pT = player.y + 5, pB = player.y + player.height - 5;
+            if (pR > pipe.x && pL < pipe.x + PIPE_WIDTH) {
+                if (pT < pipe.gapY || pB > pipe.gapY + currentDiff.gap) return true;
+            }
+            return false;
+        }
+
+        function render() {
+            const PIPE_WIDTH = 60;
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(1, '#98D8C8');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.beginPath();
+            ctx.arc(100 - (frameCount * 0.5) % 550, 80, 30, 0, Math.PI * 2);
+            ctx.arc(130 - (frameCount * 0.5) % 550, 70, 25, 0, Math.PI * 2);
+            ctx.fill();
+
+            pipes.forEach(pipe => {
+                ctx.fillStyle = '#2ecc71';
+                ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
+                ctx.fillStyle = '#27ae60';
+                ctx.fillRect(pipe.x - 5, pipe.gapY - 25, PIPE_WIDTH + 10, 25);
+                ctx.fillStyle = '#2ecc71';
+                ctx.fillRect(pipe.x, pipe.gapY + currentDiff.gap, PIPE_WIDTH, canvas.height - pipe.gapY - currentDiff.gap);
+                ctx.fillStyle = '#27ae60';
+                ctx.fillRect(pipe.x - 5, pipe.gapY + currentDiff.gap, PIPE_WIDTH + 10, 25);
+            });
+
+            const currentSkinData = SKINS.find(s => s.id === gameState.currentSkin);
+            if (currentSkinData && currentSkinData.draw) {
+                currentSkinData.draw(ctx, player.x, player.y, player.width);
+            }
+
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px Arial';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.textAlign = 'center';
+            ctx.strokeText(score, canvas.width / 2, 70);
+            ctx.fillText(score, canvas.width / 2, 70);
+
+            if (isOnlineMode) {
+                ctx.fillStyle = '#e91e63';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText('ONLINE', canvas.width / 2, 100);
+            }
+        }
+
+        function jump() {
+            if (!gameRunning) return;
+            player.velocity = currentDiff.jump;
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            document.getElementById('jumpZone').style.display = 'none';
+
+            const earnedPoints = score;
+            gameState.totalScore += earnedPoints;
+
+            if (score > gameState.bestScore) {
+                gameState.bestScore = score;
+                updateOnlinePresence();
+            }
+
+            saveState();
+
+            if (isOnlineMode && db && playerName) {
+                db.ref('chat').push({
+                    system: true,
+                    text: `${playerName} набрал ${score} очков!`,
+                    time: Date.now()
+                });
+            }
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('bestScore').textContent = gameState.bestScore;
+            document.getElementById('earnedPoints').textContent = earnedPoints;
+            document.getElementById('gameOver').classList.remove('hidden');
+        }
+
+        // Управление
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); jump(); }
+        });
+
+        document.getElementById('jumpZone').addEventListener('click', (e) => { e.preventDefault(); jump(); });
+        document.getElementById('jumpZone').addEventListener('touchstart', (e) => { e.preventDefault(); jump(); }, { passive: false });
+
+        document.getElementById('promoInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') submitPromo(); });
+        document.getElementById('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChatMessage(); });
+
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('gesturechange', (e) => e.preventDefault());
+
+        document.getElementById('jumpZone').style.display = 'none';
+        updateUI();
+    </script>
+</body>
+</html>

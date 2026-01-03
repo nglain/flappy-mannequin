@@ -1971,31 +1971,16 @@
         }
 
         function loadFanSkins() {
-            // Загружаем сохранённые скины из localStorage
-            const savedSkins = JSON.parse(localStorage.getItem('flappyFanSkins')) || [];
-
-            // Демо скины (всегда показываем)
-            const demoSkins = [
-                { id: 'demo1', name: 'Ниндзя', author: 'NinjaGamer', votes: 156, imageData: null, isWinner: true, isDemo: true },
-                { id: 'demo2', name: 'Пиксельный', author: 'PixelArt', votes: 89, imageData: null, isWinner: false, isDemo: true },
-                { id: 'demo3', name: 'Огненный', author: 'FireBoy', votes: 67, imageData: null, isWinner: false, isDemo: true },
-                { id: 'demo4', name: 'Космонавт', author: 'SpaceX', votes: 45, imageData: null, isWinner: true, isDemo: true },
-                { id: 'demo5', name: 'Робот', author: 'TechKid', votes: 34, imageData: null, isWinner: false, isDemo: true }
-            ];
-
-            // Объединяем: сначала пользовательские, потом демо
-            fanSkins = [...savedSkins, ...demoSkins];
+            // Загружаем скины из localStorage
+            fanSkins = JSON.parse(localStorage.getItem('flappyFanSkins')) || [];
 
             // Сортируем по голосам
             fanSkins.sort((a, b) => b.votes - a.votes);
-
             renderFanSkins();
         }
 
         function saveFanSkins() {
-            // Сохраняем только пользовательские скины (не демо)
-            const userSkins = fanSkins.filter(s => !s.isDemo);
-            localStorage.setItem('flappyFanSkins', JSON.stringify(userSkins));
+            localStorage.setItem('flappyFanSkins', JSON.stringify(fanSkins));
         }
 
         function renderFanSkins() {
@@ -2007,8 +1992,14 @@
             }
 
             if (skinsToShow.length === 0) {
-                grid.innerHTML = `<div style="color: white; text-align: center; padding: 20px;">
-                    ${currentFanTab === 'winners' ? 'Пока нет победителей' : 'Пока нет скинов. Будь первым!'}
+                grid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; line-height: 1.6;">
+                    ${currentFanTab === 'winners' ? 'Пока нет победителей' : `
+                        <p style="font-size: 16px; margin-bottom: 10px;">🎨 Пока нет скинов</p>
+                        <p style="font-size: 12px; color: #ddd;">1. Нарисуй свой скин</p>
+                        <p style="font-size: 12px; color: #ddd;">2. Нажми "📤 Код" чтобы скопировать</p>
+                        <p style="font-size: 12px; color: #ddd;">3. Отправь код другу!</p>
+                        <p style="font-size: 11px; color: #aaa; margin-top: 10px;">Друг добавит твой скин через "📥 Добавить скин друга"</p>
+                    `}
                 </div>`;
                 return;
             }

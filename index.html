@@ -1959,24 +1959,31 @@
         }
 
         function loadFanSkins() {
-            if (db) {
-                db.ref('fanSkins').orderByChild('votes').on('value', (snapshot) => {
-                    fanSkins = [];
-                    snapshot.forEach(child => {
-                        fanSkins.push({ id: child.key, ...child.val() });
-                    });
-                    fanSkins.reverse(); // Больше голосов - выше
-                    renderFanSkins();
-                });
-            } else {
-                // Оффлайн демо-скины
-                fanSkins = [
-                    { id: 'demo1', name: 'Крутой Скин', author: 'Player123', votes: 42, imageData: null, isWinner: false },
-                    { id: 'demo2', name: 'Радужный', author: 'Gamer456', votes: 28, imageData: null, isWinner: false },
-                    { id: 'demo3', name: 'Золотой', author: 'Pro789', votes: 15, imageData: null, isWinner: true }
-                ];
-                renderFanSkins();
-            }
+            // Загружаем сохранённые скины из localStorage
+            const savedSkins = JSON.parse(localStorage.getItem('flappyFanSkins')) || [];
+
+            // Демо скины (всегда показываем)
+            const demoSkins = [
+                { id: 'demo1', name: 'Ниндзя', author: 'NinjaGamer', votes: 156, imageData: null, isWinner: true, isDemo: true },
+                { id: 'demo2', name: 'Пиксельный', author: 'PixelArt', votes: 89, imageData: null, isWinner: false, isDemo: true },
+                { id: 'demo3', name: 'Огненный', author: 'FireBoy', votes: 67, imageData: null, isWinner: false, isDemo: true },
+                { id: 'demo4', name: 'Космонавт', author: 'SpaceX', votes: 45, imageData: null, isWinner: true, isDemo: true },
+                { id: 'demo5', name: 'Робот', author: 'TechKid', votes: 34, imageData: null, isWinner: false, isDemo: true }
+            ];
+
+            // Объединяем: сначала пользовательские, потом демо
+            fanSkins = [...savedSkins, ...demoSkins];
+
+            // Сортируем по голосам
+            fanSkins.sort((a, b) => b.votes - a.votes);
+
+            renderFanSkins();
+        }
+
+        function saveFanSkins() {
+            // Сохраняем только пользовательские скины (не демо)
+            const userSkins = fanSkins.filter(s => !s.isDemo);
+            localStorage.setItem('flappyFanSkins', JSON.stringify(userSkins));
         }
 
         function renderFanSkins() {
@@ -2027,12 +2034,11 @@
             myVotes.push(skinId);
             localStorage.setItem('flappyFanVotes', JSON.stringify(myVotes));
 
-            if (db) {
-                const skinRef = db.ref('fanSkins/' + skinId + '/votes');
-                skinRef.transaction(current => (current || 0) + 1);
-            } else {
-                const skin = fanSkins.find(s => s.id === skinId);
-                if (skin) skin.votes++;
+            const skin = fanSkins.find(s => s.id === skinId);
+            if (skin) {
+                skin.votes++;
+                saveFanSkins();
+                fanSkins.sort((a, b) => b.votes - a.votes);
                 renderFanSkins();
             }
         }
@@ -2110,31 +2116,31 @@
             const canvas = document.getElementById('drawCanvas');
             const imageData = canvas.toDataURL('image/png');
 
-            const authorName = playerName || 'Аноним';
+            const authorName = playerName || 'Игрок_' + Math.floor(Math.random() * 1000);
 
             const newSkin = {
+                id: 'user_' + Date.now(),
                 name: name,
                 author: authorName,
-                votes: 0,
+                votes: 1, // Автоматический голос за свой скин
                 imageData: imageData,
                 isWinner: false,
+                isDemo: false,
                 createdAt: Date.now()
             };
 
-            if (db) {
-                db.ref('fanSkins').push(newSkin).then(() => {
-                    alert('Скин отправлен на голосование!');
-                    closeDrawModal();
-                }).catch(err => {
-                    alert('Ошибка отправки: ' + err.message);
-                });
-            } else {
-                newSkin.id = 'local_' + Date.now();
-                fanSkins.unshift(newSkin);
-                renderFanSkins();
-                alert('Скин добавлен! (оффлайн режим)');
-                closeDrawModal();
-            }
+            // Добавляем в начало списка
+            fanSkins.unshift(newSkin);
+
+            // Сохраняем в localStorage
+            saveFanSkins();
+
+            // Сортируем и обновляем
+            fanSkins.sort((a, b) => b.votes - a.votes);
+            renderFanSkins();
+
+            alert('🎉 Скин "' + name + '" добавлен! Другие могут за него голосовать.');
+            closeDrawModal();
         }
 
         // Online функции

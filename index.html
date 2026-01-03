@@ -1174,6 +1174,12 @@
         let playerName = localStorage.getItem('flappyPlayerName') || '';
         let isOnlineMode = false;
 
+        // Сброс плохих ников
+        if (playerName.toLowerCase().includes('сук') || playerName.toLowerCase().includes('suk')) {
+            playerName = '';
+            localStorage.removeItem('flappyPlayerName');
+        }
+
         try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();

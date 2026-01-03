@@ -1970,30 +1970,26 @@
             renderFanSkins();
         }
 
-        // URL API (будет работать после деплоя на Vercel)
-        const API_URL = window.location.hostname === 'localhost'
-            ? '/api/skins'
-            : 'https://flappy-mannequin.vercel.app/api/skins';
+        // ОНЛАЙН БАЗА СКИНОВ - работает для ВСЕХ игроков!
+        const JSONBLOB_ID = '019b81a1-a6e5-7c60-8fcb-8ad8190e424b';
+        const JSONBLOB_URL = 'https://jsonblob.com/api/jsonBlob/' + JSONBLOB_ID;
 
         async function loadFanSkins() {
-            // Показываем загрузку
             const grid = document.getElementById('fanSkinsGrid');
-            grid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">⏳ Загрузка...</div>';
+            grid.innerHTML = '<div style="color: white; text-align: center; padding: 20px;">⏳ Загрузка онлайн скинов...</div>';
 
             try {
-                // Пробуем загрузить онлайн
-                const response = await fetch(API_URL);
+                const response = await fetch(JSONBLOB_URL);
                 if (response.ok) {
                     const data = await response.json();
                     fanSkins = data.skins || [];
-                    // Сохраняем локально как бэкап
                     localStorage.setItem('flappyFanSkins', JSON.stringify(fanSkins));
+                    console.log('✅ Загружено ' + fanSkins.length + ' скинов онлайн!');
                 } else {
                     throw new Error('API error');
                 }
             } catch (e) {
-                console.log('Онлайн недоступен, грузим локально');
-                // Загружаем локальные
+                console.log('⚠️ Онлайн недоступен:', e.message);
                 fanSkins = JSON.parse(localStorage.getItem('flappyFanSkins')) || [];
             }
 
@@ -2005,22 +2001,18 @@
             localStorage.setItem('flappyFanSkins', JSON.stringify(fanSkins));
         }
 
-        async function syncSkinsOnline() {
+        async function saveSkinsOnline() {
             try {
-                const localSkins = JSON.parse(localStorage.getItem('flappyFanSkins')) || [];
-                const response = await fetch(API_URL, {
-                    method: 'POST',
+                await fetch(JSONBLOB_URL, {
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'sync', skins: localSkins })
+                    body: JSON.stringify({ skins: fanSkins, lastUpdate: Date.now() })
                 });
-                if (response.ok) {
-                    const data = await response.json();
-                    fanSkins = data.skins || [];
-                    localStorage.setItem('flappyFanSkins', JSON.stringify(fanSkins));
-                    renderFanSkins();
-                }
+                console.log('✅ Скины сохранены онлайн!');
+                return true;
             } catch (e) {
-                console.log('Синхронизация не удалась');
+                console.log('❌ Ошибка сохранения:', e.message);
+                return false;
             }
         }
 
@@ -2036,10 +2028,8 @@
                 grid.innerHTML = `<div style="color: white; text-align: center; padding: 20px; line-height: 1.6;">
                     ${currentFanTab === 'winners' ? 'Пока нет победителей' : `
                         <p style="font-size: 16px; margin-bottom: 10px;">🎨 Пока нет скинов</p>
-                        <p style="font-size: 12px; color: #ddd;">1. Нарисуй свой скин</p>
-                        <p style="font-size: 12px; color: #ddd;">2. Нажми "📤 Код" чтобы скопировать</p>
-                        <p style="font-size: 12px; color: #ddd;">3. Отправь код другу!</p>
-                        <p style="font-size: 11px; color: #aaa; margin-top: 10px;">Друг добавит твой скин через "📥 Добавить скин друга"</p>
+                        <p style="font-size: 14px; color: #4CAF50;">🌐 Работает ОНЛАЙН!</p>
+                        <p style="font-size: 12px; color: #ddd; margin-top: 10px;">Нарисуй скин - все увидят!</p>
                     `}
                 </div>`;
                 return;
@@ -2087,16 +2077,8 @@
                 fanSkins.sort((a, b) => b.votes - a.votes);
                 renderFanSkins();
 
-                // Отправляем голос на сервер
-                try {
-                    await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'vote', skinId: skinId })
-                    });
-                } catch (e) {
-                    console.log('Не удалось отправить голос онлайн');
-                }
+                // Сохраняем голос онлайн - все увидят!
+                await saveSkinsOnline();
             }
         }
 
@@ -2175,36 +2157,15 @@
 
             const authorName = playerName || 'Игрок_' + Math.floor(Math.random() * 1000);
 
-            // Сначала пробуем отправить на сервер
-            let newSkin;
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'add',
-                        name: name,
-                        author: authorName,
-                        imageData: imageData
-                    })
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    newSkin = data.skin;
-                } else {
-                    throw new Error('API error');
-                }
-            } catch (e) {
-                console.log('Не удалось отправить онлайн, сохраняем локально');
-                newSkin = {
-                    id: 'user_' + Date.now(),
-                    name: name,
-                    author: authorName,
-                    votes: 1,
-                    imageData: imageData,
-                    createdAt: Date.now()
-                };
-            }
+            // Создаём новый скин
+            const newSkin = {
+                id: 'skin_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                name: name,
+                author: authorName,
+                votes: 1,
+                imageData: imageData,
+                createdAt: Date.now()
+            };
 
             // Добавляем в список
             fanSkins.unshift(newSkin);
@@ -2212,7 +2173,15 @@
             fanSkins.sort((a, b) => b.votes - a.votes);
             renderFanSkins();
 
-            alert('🎉 Скин "' + name + '" добавлен! Все игроки увидят его.');
+            // Сохраняем ОНЛАЙН - все увидят!
+            const saved = await saveSkinsOnline();
+
+            if (saved) {
+                alert('🎉 Скин "' + name + '" добавлен ОНЛАЙН!\n\nВсе игроки увидят его!');
+            } else {
+                alert('⚠️ Скин сохранён локально.\nПопробуй ещё раз позже.');
+            }
+
             closeDrawModal();
         }
 

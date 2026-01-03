@@ -1110,20 +1110,8 @@
             </div>
 
             <button class="submit-skin-btn" onclick="openDrawModal()">✏️ Нарисовать свой скин</button>
-            <button class="submit-skin-btn" onclick="openImportModal()" style="background: linear-gradient(135deg, #2196F3, #1976D2);">📥 Добавить скин друга</button>
 
             <button class="back-btn" onclick="closeFanSkins()">Назад</button>
-        </div>
-
-        <!-- Import Skin Modal -->
-        <div id="importModal" class="draw-modal hidden">
-            <h3>Добавить скин друга</h3>
-            <p style="color: #aaa; font-size: 12px; margin-bottom: 15px;">Вставь код скина от друга:</p>
-            <textarea id="importCodeInput" style="width: 280px; height: 80px; border-radius: 10px; padding: 10px; font-size: 12px; resize: none;" placeholder="Вставь код сюда..."></textarea>
-            <div class="draw-actions" style="margin-top: 15px;">
-                <button class="draw-action-btn submit" onclick="importFanSkin()">Добавить</button>
-                <button class="draw-action-btn cancel" onclick="closeImportModal()">Отмена</button>
-            </div>
         </div>
 
         <!-- Game Over -->
@@ -1141,6 +1129,7 @@
     <div id="drawModal" class="draw-modal hidden">
         <h3>Нарисуй свой скин!</h3>
 
+        <input type="text" id="skinAuthorInput" class="skin-name-input" placeholder="Твой ник..." maxlength="15" style="margin-bottom: 5px;">
         <input type="text" id="skinNameInput" class="skin-name-input" placeholder="Название скина..." maxlength="20">
 
         <div class="draw-canvas-container">
@@ -2037,7 +2026,6 @@
 
             grid.innerHTML = skinsToShow.map(skin => {
                 const voted = myVotes.includes(skin.id);
-                const canShare = skin.imageData && !skin.isDemo;
                 return `
                     <div class="fan-skin-card ${skin.isWinner ? 'winner' : ''}">
                         <div class="fan-skin-preview">
@@ -2049,7 +2037,6 @@
                         <div class="fan-skin-info">
                             <h4>${skin.name}${skin.isWinner ? ' 🏆' : ''}</h4>
                             <p class="author">от ${skin.author}</p>
-                            ${canShare ? `<button onclick="shareSkin('${skin.id}')" style="background: #2196F3; border: none; color: white; padding: 3px 8px; border-radius: 10px; font-size: 10px; cursor: pointer; margin-top: 3px;">📤 Код</button>` : ''}
                         </div>
                         <div class="fan-skin-votes">
                             <span class="vote-count">${skin.votes}</span>
@@ -2094,6 +2081,7 @@
         function closeDrawModal() {
             document.getElementById('drawModal').classList.add('hidden');
             document.getElementById('skinNameInput').value = '';
+            document.getElementById('skinAuthorInput').value = '';
         }
 
         function setupDrawCanvas(canvas) {
@@ -2146,6 +2134,7 @@
         }
 
         async function submitFanSkin() {
+            const author = document.getElementById('skinAuthorInput').value.trim() || 'Аноним';
             const name = document.getElementById('skinNameInput').value.trim();
             if (!name) {
                 alert('Введи название скина!');
@@ -2155,7 +2144,7 @@
             const canvas = document.getElementById('drawCanvas');
             const imageData = canvas.toDataURL('image/png');
 
-            const authorName = 'Аноним';
+            const authorName = author;
 
             // Создаём новый скин
             const newSkin = {

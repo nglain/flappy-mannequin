@@ -1101,8 +1101,8 @@
             <p class="subtitle">Голосуй за лучшие скины!</p>
 
             <div class="fan-tabs">
-                <button class="fan-tab active" onclick="switchFanTab('vote')">Голосование</button>
-                <button class="fan-tab" onclick="switchFanTab('winners')">Победители</button>
+                <button class="fan-tab active" onclick="switchFanTab('vote', this)">Голосование</button>
+                <button class="fan-tab" onclick="switchFanTab('winners', this)">Победители</button>
             </div>
 
             <div class="fan-skins-grid" id="fanSkinsGrid">
@@ -1136,16 +1136,16 @@
         </div>
 
         <div class="draw-tools">
-            <button class="color-btn active" style="background: #000000" onclick="setDrawColor('#000000')"></button>
-            <button class="color-btn" style="background: #ffffff" onclick="setDrawColor('#ffffff')"></button>
-            <button class="color-btn" style="background: #ff0000" onclick="setDrawColor('#ff0000')"></button>
-            <button class="color-btn" style="background: #00ff00" onclick="setDrawColor('#00ff00')"></button>
-            <button class="color-btn" style="background: #0000ff" onclick="setDrawColor('#0000ff')"></button>
-            <button class="color-btn" style="background: #ffff00" onclick="setDrawColor('#ffff00')"></button>
-            <button class="color-btn" style="background: #ff00ff" onclick="setDrawColor('#ff00ff')"></button>
-            <button class="color-btn" style="background: #00ffff" onclick="setDrawColor('#00ffff')"></button>
-            <button class="color-btn" style="background: #ff9900" onclick="setDrawColor('#ff9900')"></button>
-            <button class="color-btn" style="background: #9900ff" onclick="setDrawColor('#9900ff')"></button>
+            <button class="color-btn active" style="background: #000000" onclick="setDrawColor('#000000', this)"></button>
+            <button class="color-btn" style="background: #ffffff" onclick="setDrawColor('#ffffff', this)"></button>
+            <button class="color-btn" style="background: #ff0000" onclick="setDrawColor('#ff0000', this)"></button>
+            <button class="color-btn" style="background: #00ff00" onclick="setDrawColor('#00ff00', this)"></button>
+            <button class="color-btn" style="background: #0000ff" onclick="setDrawColor('#0000ff', this)"></button>
+            <button class="color-btn" style="background: #ffff00" onclick="setDrawColor('#ffff00', this)"></button>
+            <button class="color-btn" style="background: #ff00ff" onclick="setDrawColor('#ff00ff', this)"></button>
+            <button class="color-btn" style="background: #00ffff" onclick="setDrawColor('#00ffff', this)"></button>
+            <button class="color-btn" style="background: #ff9900" onclick="setDrawColor('#ff9900', this)"></button>
+            <button class="color-btn" style="background: #9900ff" onclick="setDrawColor('#9900ff', this)"></button>
         </div>
 
         <div class="draw-actions">
@@ -1951,10 +1951,10 @@
             document.getElementById('mainMenu').classList.remove('hidden');
         }
 
-        function switchFanTab(tab) {
+        function switchFanTab(tab, btn) {
             currentFanTab = tab;
             document.querySelectorAll('.fan-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+            if (btn) btn.classList.add('active');
             renderFanSkins();
         }
 
@@ -2088,10 +2088,10 @@
             canvas.ontouchend = () => isDrawing = false;
         }
 
-        function setDrawColor(color) {
+        function setDrawColor(color, btn) {
             drawColor = color;
-            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
         }
 
         function clearDrawCanvas() {

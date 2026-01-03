@@ -1114,36 +1114,6 @@
             <button class="back-btn" onclick="closeFanSkins()">Назад</button>
         </div>
 
-        <!-- Drawing Modal -->
-        <div id="drawModal" class="draw-modal hidden">
-            <h3>Нарисуй свой скин!</h3>
-
-            <input type="text" id="skinNameInput" class="skin-name-input" placeholder="Название скина..." maxlength="20">
-
-            <div class="draw-canvas-container">
-                <canvas id="drawCanvas" width="80" height="80"></canvas>
-            </div>
-
-            <div class="draw-tools">
-                <button class="color-btn active" style="background: #000000" onclick="setDrawColor('#000000')"></button>
-                <button class="color-btn" style="background: #ffffff" onclick="setDrawColor('#ffffff')"></button>
-                <button class="color-btn" style="background: #ff0000" onclick="setDrawColor('#ff0000')"></button>
-                <button class="color-btn" style="background: #00ff00" onclick="setDrawColor('#00ff00')"></button>
-                <button class="color-btn" style="background: #0000ff" onclick="setDrawColor('#0000ff')"></button>
-                <button class="color-btn" style="background: #ffff00" onclick="setDrawColor('#ffff00')"></button>
-                <button class="color-btn" style="background: #ff00ff" onclick="setDrawColor('#ff00ff')"></button>
-                <button class="color-btn" style="background: #00ffff" onclick="setDrawColor('#00ffff')"></button>
-                <button class="color-btn" style="background: #ff9900" onclick="setDrawColor('#ff9900')"></button>
-                <button class="color-btn" style="background: #9900ff" onclick="setDrawColor('#9900ff')"></button>
-            </div>
-
-            <div class="draw-actions">
-                <button class="draw-action-btn clear" onclick="clearDrawCanvas()">Очистить</button>
-                <button class="draw-action-btn submit" onclick="submitFanSkin()">Отправить</button>
-                <button class="draw-action-btn cancel" onclick="closeDrawModal()">Отмена</button>
-            </div>
-        </div>
-
         <!-- Game Over -->
         <div id="gameOver" class="game-over hidden">
             <h2>GAME OVER</h2>
@@ -1152,6 +1122,36 @@
             <p class="earned">+<span id="earnedPoints">0</span> очков!</p>
             <button class="menu-btn play" onclick="startGame()">Ещё раз</button>
             <button class="back-btn" onclick="showMainMenu()">В меню</button>
+        </div>
+    </div>
+
+    <!-- Drawing Modal (снаружи контейнера для корректного отображения) -->
+    <div id="drawModal" class="draw-modal hidden">
+        <h3>Нарисуй свой скин!</h3>
+
+        <input type="text" id="skinNameInput" class="skin-name-input" placeholder="Название скина..." maxlength="20">
+
+        <div class="draw-canvas-container">
+            <canvas id="drawCanvas" width="80" height="80"></canvas>
+        </div>
+
+        <div class="draw-tools">
+            <button class="color-btn active" style="background: #000000" onclick="setDrawColor('#000000')"></button>
+            <button class="color-btn" style="background: #ffffff" onclick="setDrawColor('#ffffff')"></button>
+            <button class="color-btn" style="background: #ff0000" onclick="setDrawColor('#ff0000')"></button>
+            <button class="color-btn" style="background: #00ff00" onclick="setDrawColor('#00ff00')"></button>
+            <button class="color-btn" style="background: #0000ff" onclick="setDrawColor('#0000ff')"></button>
+            <button class="color-btn" style="background: #ffff00" onclick="setDrawColor('#ffff00')"></button>
+            <button class="color-btn" style="background: #ff00ff" onclick="setDrawColor('#ff00ff')"></button>
+            <button class="color-btn" style="background: #00ffff" onclick="setDrawColor('#00ffff')"></button>
+            <button class="color-btn" style="background: #ff9900" onclick="setDrawColor('#ff9900')"></button>
+            <button class="color-btn" style="background: #9900ff" onclick="setDrawColor('#9900ff')"></button>
+        </div>
+
+        <div class="draw-actions">
+            <button class="draw-action-btn clear" onclick="clearDrawCanvas()">Очистить</button>
+            <button class="draw-action-btn submit" onclick="submitFanSkin()">Отправить</button>
+            <button class="draw-action-btn cancel" onclick="closeDrawModal()">Отмена</button>
         </div>
     </div>
 

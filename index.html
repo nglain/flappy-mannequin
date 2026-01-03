@@ -94,6 +94,7 @@
         .menu-btn.promo { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
         .menu-btn.difficulty { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
         .menu-btn.cheats { background: linear-gradient(135deg, #ff0000, #8b0000); color: white; text-shadow: 0 0 10px #fff; }
+        .menu-btn.fan { background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; }
         .menu-btn.pass { background: linear-gradient(135deg, #00d4ff, #7b2ff7); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .menu-btn:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         .menu-btn:active { transform: scale(0.98); }
@@ -512,6 +513,245 @@
             justify-content: center;
         }
 
+        /* Fan Skins */
+        .fan-menu {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(180deg, #ff6b35 0%, #f7931e 50%, #ffcc00 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            z-index: 15;
+            overflow-y: auto;
+        }
+
+        .fan-menu.hidden { display: none; }
+        .fan-menu h2 {
+            color: white;
+            margin-bottom: 5px;
+            font-size: clamp(18px, 5vw, 24px);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .fan-menu .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .fan-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .fan-tab {
+            padding: 8px 15px;
+            background: rgba(0,0,0,0.2);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .fan-tab.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: bold;
+        }
+
+        .fan-skins-grid {
+            width: 100%;
+            max-width: 320px;
+            max-height: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .fan-skin-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fan-skin-card.winner {
+            background: linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,165,0,0.4));
+            border: 2px solid #ffd700;
+        }
+
+        .fan-skin-preview {
+            width: 50px;
+            height: 50px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fan-skin-info {
+            flex: 1;
+            color: white;
+        }
+
+        .fan-skin-info h4 {
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .fan-skin-info .author {
+            font-size: 10px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .fan-skin-votes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .vote-count {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .vote-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vote-btn:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.1);
+        }
+
+        .vote-btn.voted {
+            background: #4CAF50;
+        }
+
+        .submit-skin-btn {
+            width: 100%;
+            max-width: 280px;
+            padding: 12px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .submit-skin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Drawing Modal */
+        .draw-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .draw-modal.hidden { display: none; }
+
+        .draw-modal h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .draw-canvas-container {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #drawCanvas {
+            border: 2px solid #333;
+            border-radius: 5px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .draw-tools {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .color-btn.active {
+            box-shadow: 0 0 10px white;
+            transform: scale(1.2);
+        }
+
+        .draw-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .draw-action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .draw-action-btn.submit { background: #4CAF50; color: white; }
+        .draw-action-btn.clear { background: #ff9800; color: white; }
+        .draw-action-btn.cancel { background: #f44336; color: white; }
+
+        .skin-name-input {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
         /* Online Parkour */
         .online-menu {
             position: absolute;
@@ -699,6 +939,7 @@
             <button class="menu-btn difficulty" onclick="openDifficulty()">Сложность</button>
             <button class="menu-btn promo" onclick="openPromo()">Промокод</button>
             <button class="menu-btn pass" onclick="openPass()">Пасс</button>
+            <button class="menu-btn fan" onclick="openFanSkins()">Скины от фанатов</button>
             <button class="menu-btn cheats" onclick="openCheats()">Читы</button>
         </div>
 
@@ -784,7 +1025,47 @@
                 <button id="wideGapBtn" class="cheat-toggle off" onclick="toggleCheat('wideGap')">OFF</button>
             </div>
 
+            <div class="cheat-item">
+                <span>Невидимые трубы</span>
+                <button id="invisPipesBtn" class="cheat-toggle off" onclick="toggleCheat('invisPipes')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Мини-размер</span>
+                <button id="miniSizeBtn" class="cheat-toggle off" onclick="toggleCheat('miniSize')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Заморозка труб</span>
+                <button id="freezePipesBtn" class="cheat-toggle off" onclick="toggleCheat('freezePipes')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Полёт</span>
+                <button id="flyModeBtn" class="cheat-toggle off" onclick="toggleCheat('flyMode')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Очки x2</span>
+                <button id="doubleScoreBtn" class="cheat-toggle off" onclick="toggleCheat('doubleScore')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Радужный режим</span>
+                <button id="rainbowModeBtn" class="cheat-toggle off" onclick="toggleCheat('rainbowMode')">OFF</button>
+            </div>
+
+            <div class="cheat-item">
+                <span>Нет труб</span>
+                <button id="noPipesBtn" class="cheat-toggle off" onclick="toggleCheat('noPipes')">OFF</button>
+            </div>
+
+            <button class="cheat-action" onclick="cheatDisableAll()" style="background: linear-gradient(135deg, #333, #000); border: 2px solid #ff0000;">ВЫКЛЮЧИТЬ ВСЕ ЧИТЫ</button>
+            <button class="cheat-action" onclick="cheatEnableAll()" style="background: linear-gradient(135deg, #00ff00, #008800);">ВКЛЮЧИТЬ ВСЕ ЧИТЫ</button>
+
             <button class="cheat-action" onclick="cheatAddCoins()">+1000 очков</button>
+            <button class="cheat-action" onclick="cheatAdd10k()">+10000 очков</button>
+            <button class="cheat-action" onclick="cheatMaxScore()">Рекорд 9999</button>
             <button class="cheat-action" onclick="cheatUnlockAll()">Разблокировать ВСЕ скины</button>
             <button class="cheat-action" onclick="cheatResetProgress()">Сбросить прогресс</button>
 
@@ -812,6 +1093,55 @@
             <div class="pass-rewards" id="passRewards"></div>
 
             <button class="back-btn" onclick="closePass()">Назад</button>
+        </div>
+
+        <!-- Fan Skins -->
+        <div id="fanMenu" class="fan-menu hidden">
+            <h2>Скины от фанатов</h2>
+            <p class="subtitle">Голосуй за лучшие скины!</p>
+
+            <div class="fan-tabs">
+                <button class="fan-tab active" onclick="switchFanTab('vote')">Голосование</button>
+                <button class="fan-tab" onclick="switchFanTab('winners')">Победители</button>
+            </div>
+
+            <div class="fan-skins-grid" id="fanSkinsGrid">
+                <!-- Скины загружаются динамически -->
+            </div>
+
+            <button class="submit-skin-btn" onclick="openDrawModal()">✏️ Нарисовать свой скин</button>
+
+            <button class="back-btn" onclick="closeFanSkins()">Назад</button>
+        </div>
+
+        <!-- Drawing Modal -->
+        <div id="drawModal" class="draw-modal hidden">
+            <h3>Нарисуй свой скин!</h3>
+
+            <input type="text" id="skinNameInput" class="skin-name-input" placeholder="Название скина..." maxlength="20">
+
+            <div class="draw-canvas-container">
+                <canvas id="drawCanvas" width="80" height="80"></canvas>
+            </div>
+
+            <div class="draw-tools">
+                <button class="color-btn active" style="background: #000000" onclick="setDrawColor('#000000')"></button>
+                <button class="color-btn" style="background: #ffffff" onclick="setDrawColor('#ffffff')"></button>
+                <button class="color-btn" style="background: #ff0000" onclick="setDrawColor('#ff0000')"></button>
+                <button class="color-btn" style="background: #00ff00" onclick="setDrawColor('#00ff00')"></button>
+                <button class="color-btn" style="background: #0000ff" onclick="setDrawColor('#0000ff')"></button>
+                <button class="color-btn" style="background: #ffff00" onclick="setDrawColor('#ffff00')"></button>
+                <button class="color-btn" style="background: #ff00ff" onclick="setDrawColor('#ff00ff')"></button>
+                <button class="color-btn" style="background: #00ffff" onclick="setDrawColor('#00ffff')"></button>
+                <button class="color-btn" style="background: #ff9900" onclick="setDrawColor('#ff9900')"></button>
+                <button class="color-btn" style="background: #9900ff" onclick="setDrawColor('#9900ff')"></button>
+            </div>
+
+            <div class="draw-actions">
+                <button class="draw-action-btn clear" onclick="clearDrawCanvas()">Очистить</button>
+                <button class="draw-action-btn submit" onclick="submitFanSkin()">Отправить</button>
+                <button class="draw-action-btn cancel" onclick="closeDrawModal()">Отмена</button>
+            </div>
         </div>
 
         <!-- Game Over -->
@@ -1409,7 +1739,14 @@
             autoJump: false,
             slowMo: false,
             megaJump: false,
-            wideGap: false
+            wideGap: false,
+            invisPipes: false,
+            miniSize: false,
+            freezePipes: false,
+            flyMode: false,
+            doubleScore: false,
+            rainbowMode: false,
+            noPipes: false
         };
 
         function openCheats() {
@@ -1434,16 +1771,25 @@
                 autoJump: 'autoJumpBtn',
                 slowMo: 'slowMoBtn',
                 megaJump: 'megaJumpBtn',
-                wideGap: 'wideGapBtn'
+                wideGap: 'wideGapBtn',
+                invisPipes: 'invisPipesBtn',
+                miniSize: 'miniSizeBtn',
+                freezePipes: 'freezePipesBtn',
+                flyMode: 'flyModeBtn',
+                doubleScore: 'doubleScoreBtn',
+                rainbowMode: 'rainbowModeBtn',
+                noPipes: 'noPipesBtn'
             };
             for (const [cheat, btnId] of Object.entries(buttons)) {
                 const btn = document.getElementById(btnId);
-                if (cheats[cheat]) {
-                    btn.textContent = 'ON';
-                    btn.className = 'cheat-toggle on';
-                } else {
-                    btn.textContent = 'OFF';
-                    btn.className = 'cheat-toggle off';
+                if (btn) {
+                    if (cheats[cheat]) {
+                        btn.textContent = 'ON';
+                        btn.className = 'cheat-toggle on';
+                    } else {
+                        btn.textContent = 'OFF';
+                        btn.className = 'cheat-toggle off';
+                    }
                 }
             }
         }
@@ -1453,6 +1799,20 @@
             saveState();
             updateUI();
             alert('Добавлено 1000 очков!');
+        }
+
+        function cheatAdd10k() {
+            gameState.totalScore += 10000;
+            saveState();
+            updateUI();
+            alert('Добавлено 10000 очков!');
+        }
+
+        function cheatMaxScore() {
+            gameState.bestScore = 9999;
+            saveState();
+            updateUI();
+            alert('Рекорд установлен: 9999!');
         }
 
         function cheatUnlockAll() {
@@ -1475,6 +1835,20 @@
                 localStorage.removeItem('flappyDifficulty');
                 location.reload();
             }
+        }
+
+        function cheatDisableAll() {
+            for (const key in cheats) {
+                cheats[key] = false;
+            }
+            updateCheatButtons();
+        }
+
+        function cheatEnableAll() {
+            for (const key in cheats) {
+                cheats[key] = true;
+            }
+            updateCheatButtons();
         }
 
         // Battle Pass функции
@@ -1556,6 +1930,211 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // Fan Skins функции
+        let fanSkins = [];
+        let myVotes = JSON.parse(localStorage.getItem('flappyFanVotes')) || [];
+        let currentFanTab = 'vote';
+        let drawColor = '#000000';
+        let isDrawing = false;
+        let drawCtx = null;
+
+        function openFanSkins() {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('fanMenu').classList.remove('hidden');
+            loadFanSkins();
+        }
+
+        function closeFanSkins() {
+            document.getElementById('fanMenu').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+        }
+
+        function switchFanTab(tab) {
+            currentFanTab = tab;
+            document.querySelectorAll('.fan-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderFanSkins();
+        }
+
+        function loadFanSkins() {
+            if (db) {
+                db.ref('fanSkins').orderByChild('votes').on('value', (snapshot) => {
+                    fanSkins = [];
+                    snapshot.forEach(child => {
+                        fanSkins.push({ id: child.key, ...child.val() });
+                    });
+                    fanSkins.reverse(); // Больше голосов - выше
+                    renderFanSkins();
+                });
+            } else {
+                // Оффлайн демо-скины
+                fanSkins = [
+                    { id: 'demo1', name: 'Крутой Скин', author: 'Player123', votes: 42, imageData: null, isWinner: false },
+                    { id: 'demo2', name: 'Радужный', author: 'Gamer456', votes: 28, imageData: null, isWinner: false },
+                    { id: 'demo3', name: 'Золотой', author: 'Pro789', votes: 15, imageData: null, isWinner: true }
+                ];
+                renderFanSkins();
+            }
+        }
+
+        function renderFanSkins() {
+            const grid = document.getElementById('fanSkinsGrid');
+            let skinsToShow = fanSkins;
+
+            if (currentFanTab === 'winners') {
+                skinsToShow = fanSkins.filter(s => s.isWinner);
+            }
+
+            if (skinsToShow.length === 0) {
+                grid.innerHTML = `<div style="color: white; text-align: center; padding: 20px;">
+                    ${currentFanTab === 'winners' ? 'Пока нет победителей' : 'Пока нет скинов. Будь первым!'}
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = skinsToShow.map(skin => {
+                const voted = myVotes.includes(skin.id);
+                return `
+                    <div class="fan-skin-card ${skin.isWinner ? 'winner' : ''}">
+                        <div class="fan-skin-preview">
+                            ${skin.imageData
+                                ? `<img src="${skin.imageData}" width="40" height="40" style="image-rendering: pixelated;">`
+                                : `<span style="font-size: 24px;">🎨</span>`
+                            }
+                        </div>
+                        <div class="fan-skin-info">
+                            <h4>${skin.name}${skin.isWinner ? ' 🏆' : ''}</h4>
+                            <p class="author">от ${skin.author}</p>
+                        </div>
+                        <div class="fan-skin-votes">
+                            <span class="vote-count">${skin.votes}</span>
+                            <button class="vote-btn ${voted ? 'voted' : ''}"
+                                    onclick="voteFanSkin('${skin.id}')"
+                                    ${voted ? 'disabled' : ''}>
+                                ${voted ? '✓' : '👍'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function voteFanSkin(skinId) {
+            if (myVotes.includes(skinId)) return;
+
+            myVotes.push(skinId);
+            localStorage.setItem('flappyFanVotes', JSON.stringify(myVotes));
+
+            if (db) {
+                const skinRef = db.ref('fanSkins/' + skinId + '/votes');
+                skinRef.transaction(current => (current || 0) + 1);
+            } else {
+                const skin = fanSkins.find(s => s.id === skinId);
+                if (skin) skin.votes++;
+                renderFanSkins();
+            }
+        }
+
+        function openDrawModal() {
+            document.getElementById('drawModal').classList.remove('hidden');
+            const canvas = document.getElementById('drawCanvas');
+            drawCtx = canvas.getContext('2d');
+            drawCtx.fillStyle = '#ffffff';
+            drawCtx.fillRect(0, 0, canvas.width, canvas.height);
+            setupDrawCanvas(canvas);
+        }
+
+        function closeDrawModal() {
+            document.getElementById('drawModal').classList.add('hidden');
+            document.getElementById('skinNameInput').value = '';
+        }
+
+        function setupDrawCanvas(canvas) {
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                if (e.touches) {
+                    return {
+                        x: (e.touches[0].clientX - rect.left) * scaleX,
+                        y: (e.touches[0].clientY - rect.top) * scaleY
+                    };
+                }
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
+                };
+            };
+
+            const draw = (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                drawCtx.fillStyle = drawColor;
+                drawCtx.beginPath();
+                drawCtx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
+                drawCtx.fill();
+            };
+
+            canvas.onmousedown = (e) => { isDrawing = true; draw(e); };
+            canvas.onmousemove = draw;
+            canvas.onmouseup = () => isDrawing = false;
+            canvas.onmouseleave = () => isDrawing = false;
+
+            canvas.ontouchstart = (e) => { isDrawing = true; draw(e); };
+            canvas.ontouchmove = draw;
+            canvas.ontouchend = () => isDrawing = false;
+        }
+
+        function setDrawColor(color) {
+            drawColor = color;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function clearDrawCanvas() {
+            const canvas = document.getElementById('drawCanvas');
+            drawCtx.fillStyle = '#ffffff';
+            drawCtx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function submitFanSkin() {
+            const name = document.getElementById('skinNameInput').value.trim();
+            if (!name) {
+                alert('Введи название скина!');
+                return;
+            }
+
+            const canvas = document.getElementById('drawCanvas');
+            const imageData = canvas.toDataURL('image/png');
+
+            const authorName = playerName || 'Аноним';
+
+            const newSkin = {
+                name: name,
+                author: authorName,
+                votes: 0,
+                imageData: imageData,
+                isWinner: false,
+                createdAt: Date.now()
+            };
+
+            if (db) {
+                db.ref('fanSkins').push(newSkin).then(() => {
+                    alert('Скин отправлен на голосование!');
+                    closeDrawModal();
+                }).catch(err => {
+                    alert('Ошибка отправки: ' + err.message);
+                });
+            } else {
+                newSkin.id = 'local_' + Date.now();
+                fanSkins.unshift(newSkin);
+                renderFanSkins();
+                alert('Скин добавлен! (оффлайн режим)');
+                closeDrawModal();
+            }
         }
 
         // Online функции
@@ -1718,6 +2297,8 @@
             document.getElementById('onlineMenu').classList.add('hidden');
             document.getElementById('cheatsMenu').classList.add('hidden');
             document.getElementById('passMenu').classList.add('hidden');
+            document.getElementById('fanMenu').classList.add('hidden');
+            document.getElementById('drawModal').classList.add('hidden');
             document.getElementById('jumpZone').style.display = 'none';
             isOnlineMode = false;
             updateUI();
@@ -1933,12 +2514,21 @@
         }
 
         function update() {
-            // Применяем читы slowMo
-            const gravityMod = cheats.slowMo ? 0.5 : 1;
-            const speedMod = cheats.slowMo ? 0.5 : 1;
+            // Применяем читы slowMo и flyMode
+            const gravityMod = cheats.flyMode ? 0 : (cheats.slowMo ? 0.5 : 1);
+            const speedMod = cheats.freezePipes ? 0 : (cheats.slowMo ? 0.5 : 1);
 
-            player.velocity += currentDiff.gravity * gravityMod;
+            // flyMode: плавное управление без гравитации
+            if (cheats.flyMode) {
+                player.velocity *= 0.95; // плавное торможение
+            } else {
+                player.velocity += currentDiff.gravity * gravityMod;
+            }
             player.y += player.velocity;
+
+            // miniSize: уменьшенный размер игрока
+            player.width = cheats.miniSize ? 20 : 40;
+            player.height = cheats.miniSize ? 20 : 40;
 
             if (player.y < 0) { player.y = 0; player.velocity = 0; }
             // godMode: не умираем от пола
@@ -1953,7 +2543,8 @@
             }
 
             frameCount++;
-            if (frameCount % currentDiff.spawn === 0) {
+            // noPipes: не спавним трубы
+            if (!cheats.noPipes && frameCount % currentDiff.spawn === 0) {
                 // wideGap: увеличенный проход
                 const gapSize = cheats.wideGap ? currentDiff.gap + 100 : currentDiff.gap;
                 const gapY = Math.random() * (canvas.height - gapSize - 150) + 75;
@@ -1966,7 +2557,8 @@
                 if (pipes[i].x + PIPE_WIDTH < 0) { pipes.splice(i, 1); continue; }
                 if (!pipes[i].passed && pipes[i].x + PIPE_WIDTH < player.x) {
                     pipes[i].passed = true;
-                    score++;
+                    // doubleScore: двойные очки
+                    score += cheats.doubleScore ? 2 : 1;
                 }
 
                 // autoJump: автоматический прыжок когда приближаемся к трубе
@@ -2001,11 +2593,19 @@
 
         function render() {
             const PIPE_WIDTH = 60;
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#87CEEB');
-            gradient.addColorStop(1, '#98D8C8');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // rainbowMode: радужный фон
+            if (cheats.rainbowMode) {
+                const hue = (frameCount * 2) % 360;
+                ctx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#87CEEB');
+                gradient.addColorStop(1, '#98D8C8');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
 
             ctx.fillStyle = 'rgba(255,255,255,0.8)';
             ctx.beginPath();
@@ -2014,14 +2614,37 @@
             ctx.fill();
 
             const gapSize = cheats.wideGap ? currentDiff.gap + 100 : currentDiff.gap;
-            pipes.forEach(pipe => {
-                ctx.fillStyle = '#2ecc71';
+            // invisPipes: невидимые трубы (полупрозрачные)
+            const pipeAlpha = cheats.invisPipes ? 0.15 : 1;
+            pipes.forEach((pipe, idx) => {
+                // rainbowMode: радужные трубы
+                if (cheats.rainbowMode) {
+                    const pipeHue = (frameCount * 3 + idx * 50) % 360;
+                    ctx.fillStyle = `hsla(${pipeHue}, 80%, 50%, ${pipeAlpha})`;
+                } else {
+                    ctx.fillStyle = `rgba(46, 204, 113, ${pipeAlpha})`;
+                }
                 ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
-                ctx.fillStyle = '#27ae60';
+                if (cheats.rainbowMode) {
+                    const pipeHue = (frameCount * 3 + idx * 50 + 30) % 360;
+                    ctx.fillStyle = `hsla(${pipeHue}, 80%, 40%, ${pipeAlpha})`;
+                } else {
+                    ctx.fillStyle = `rgba(39, 174, 96, ${pipeAlpha})`;
+                }
                 ctx.fillRect(pipe.x - 5, pipe.gapY - 25, PIPE_WIDTH + 10, 25);
-                ctx.fillStyle = '#2ecc71';
+                if (cheats.rainbowMode) {
+                    const pipeHue = (frameCount * 3 + idx * 50) % 360;
+                    ctx.fillStyle = `hsla(${pipeHue}, 80%, 50%, ${pipeAlpha})`;
+                } else {
+                    ctx.fillStyle = `rgba(46, 204, 113, ${pipeAlpha})`;
+                }
                 ctx.fillRect(pipe.x, pipe.gapY + gapSize, PIPE_WIDTH, canvas.height - pipe.gapY - gapSize);
-                ctx.fillStyle = '#27ae60';
+                if (cheats.rainbowMode) {
+                    const pipeHue = (frameCount * 3 + idx * 50 + 30) % 360;
+                    ctx.fillStyle = `hsla(${pipeHue}, 80%, 40%, ${pipeAlpha})`;
+                } else {
+                    ctx.fillStyle = `rgba(39, 174, 96, ${pipeAlpha})`;
+                }
                 ctx.fillRect(pipe.x - 5, pipe.gapY + gapSize, PIPE_WIDTH + 10, 25);
             });
 
@@ -2057,7 +2680,14 @@
                     autoJump: 'AUTO',
                     slowMo: 'SLOW',
                     megaJump: 'MEGA',
-                    wideGap: 'WIDE'
+                    wideGap: 'WIDE',
+                    invisPipes: 'INVIS',
+                    miniSize: 'MINI',
+                    freezePipes: 'FREEZE',
+                    flyMode: 'FLY',
+                    doubleScore: 'x2',
+                    rainbowMode: 'RGB',
+                    noPipes: 'NOPIPE'
                 };
                 const labels = activeCheats.map(c => cheatLabels[c] || c).join(' ');
                 ctx.fillText(labels, 10, 40);
